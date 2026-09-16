@@ -4,22 +4,21 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { ArrowRight } from "@/components/ui/Icons";
+import { href } from "@/i18n";
+import { getI18n } from "@/i18n/server";
 
-export function FeaturedModels() {
+export async function FeaturedModels() {
+  const { locale, dict } = await getI18n();
   return (
     <section className="bg-limestone-50 py-20 sm:py-28 lg:py-36" id="modelos">
       <div className="container-wide">
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <Reveal>
-            <SectionHeading
-              eyebrow="Modelos"
-              title="Seis casas. Infinitos terrenos."
-              intro="Desde un refugio de 45 m² hasta una casa familiar de dos niveles. Cada modelo se adapta a tu terreno, tu clima y tu forma de vivir."
-            />
+            <SectionHeading eyebrow={dict.home.models.eyebrow} title={dict.home.models.title} intro={dict.home.models.intro} />
           </Reveal>
           <Reveal delay={0.1}>
-            <Button href="/modelos" variant="outline" icon={<ArrowRight size={16} />}>
-              Ver todos los modelos
+            <Button href={href(locale, "models")} variant="outline" icon={<ArrowRight size={16} />}>
+              {dict.common.allModels}
             </Button>
           </Reveal>
         </div>

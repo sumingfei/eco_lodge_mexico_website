@@ -1,3 +1,5 @@
+import type { Locale } from "@/i18n/config";
+
 const mxn = new Intl.NumberFormat("es-MX", {
   style: "currency",
   currency: "MXN",
@@ -24,18 +26,24 @@ export function formatMeters(m: number) {
   return `${m.toFixed(1).replace(/\.0$/, "")} m`;
 }
 
-export function formatBathrooms(n: number) {
-  if (Number.isInteger(n)) return `${n} ${n === 1 ? "baño" : "baños"}`;
-  const whole = Math.floor(n);
-  return `${whole}.5 baños`;
+const words = {
+  es: { bathroom: "baño", bathrooms: "baños", bedroom: "recámara", bedrooms: "recámaras", weeks: "semanas" },
+  en: { bathroom: "bathroom", bathrooms: "bathrooms", bedroom: "bedroom", bedrooms: "bedrooms", weeks: "weeks" },
+} satisfies Record<Locale, Record<string, string>>;
+
+export function formatBathrooms(n: number, locale: Locale = "es") {
+  const w = words[locale];
+  if (Number.isInteger(n)) return `${n} ${n === 1 ? w.bathroom : w.bathrooms}`;
+  return `${Math.floor(n)}.5 ${w.bathrooms}`;
 }
 
-export function formatBedrooms(n: number) {
-  return `${n} ${n === 1 ? "recámara" : "recámaras"}`;
+export function formatBedrooms(n: number, locale: Locale = "es") {
+  const w = words[locale];
+  return `${n} ${n === 1 ? w.bedroom : w.bedrooms}`;
 }
 
-export function formatWeeks(min: number, max: number) {
-  return `${min}–${max} semanas`;
+export function formatWeeks(min: number, max: number, locale: Locale = "es") {
+  return `${min}–${max} ${words[locale].weeks}`;
 }
 
 export function roundTo(value: number, step: number) {

@@ -1,4 +1,5 @@
 import { pricing, type FinishLevel } from "@/data/pricing";
+import type { L } from "@/i18n/config";
 import { mexicanStates } from "@/data/locations";
 import { roundTo } from "./format";
 
@@ -16,7 +17,7 @@ export type EstimatorInput = {
   options: OptionKey[];
 };
 
-export type EstimateLine = { key: string; label: string; amount: number };
+export type EstimateLine = { key: string; label: L; amount: number };
 
 export type Estimate = {
   areaM2: number;
@@ -30,11 +31,11 @@ export type Estimate = {
   weeks: { min: number; max: number };
 };
 
-export const purposes: { id: Purpose; title: string; text: string }[] = [
-  { id: "principal", title: "Casa principal", text: "Donde vas a vivir todos los días." },
-  { id: "descanso", title: "Casa de descanso", text: "Fines de semana y vacaciones." },
-  { id: "inversion", title: "Airbnb / inversión", text: "Renta vacacional o de largo plazo." },
-  { id: "desarrollo", title: "Desarrollo", text: "Varias unidades en un mismo terreno." },
+export const purposes: { id: Purpose; title: L; text: L }[] = [
+  { id: "principal", title: { es: "Casa principal", en: "Primary home" }, text: { es: "Donde vas a vivir todos los días.", en: "Where you'll live every day." } },
+  { id: "descanso", title: { es: "Casa de descanso", en: "Weekend home" }, text: { es: "Fines de semana y vacaciones.", en: "Weekends and holidays." } },
+  { id: "inversion", title: { es: "Airbnb / inversión", en: "Airbnb / investment" }, text: { es: "Renta vacacional o de largo plazo.", en: "Vacation or long-term rental." } },
+  { id: "desarrollo", title: { es: "Desarrollo", en: "Development" }, text: { es: "Varias unidades en un mismo terreno.", en: "Several units on one site." } },
 ];
 
 export const initialEstimatorInput: EstimatorInput = {

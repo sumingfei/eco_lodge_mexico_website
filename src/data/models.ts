@@ -3,17 +3,19 @@
  * Add, remove or edit models here — cards, filters, detail pages, sitemap and
  * structured data are all generated from this array.
  *
+ * Text fields are bilingual `{ es, en }` objects (see /i18n/config.ts).
  * Prices are derived from /data/pricing.ts (area × price per m² of the
  * starting finish) unless `priceFromOverride` is set.
  *
  * TODO: replace placeholder renders in /public/images/models with real renders
  * or photography for each model, keeping the same file names.
  */
+import type { L } from "@/i18n/config";
 
 export type ModelFamily = "Nido" | "Casa" | "Patio";
 
 export type Room = {
-  name: string;
+  name: L;
   /** Position and size in metres, relative to the floor’s top-left corner. */
   x: number;
   y: number;
@@ -23,22 +25,17 @@ export type Room = {
   open?: boolean;
 };
 
-export type Floor = {
-  name: string;
-  width: number;
-  depth: number;
-  rooms: Room[];
-};
+export type Floor = { name: L; width: number; depth: number; rooms: Room[] };
 
-export type ModelImage = { src: string; alt: string };
+export type ModelImage = { src: string; alt: L };
 
 export type HomeModel = {
   slug: string;
   name: string;
   family: ModelFamily;
-  tagline: string;
-  description: string;
-  idealFor: string[];
+  tagline: L;
+  description: L;
+  idealFor: L[];
   areaM2: number;
   bedrooms: number;
   bathrooms: number;
@@ -51,44 +48,101 @@ export type HomeModel = {
   priceFromOverride?: number;
   images: ModelImage[];
   floorPlan: Floor[];
-  features: string[];
-  includedFinishes: string[];
-  upgrades: string[];
-  sustainability: string[];
-  faq: { q: string; a: string }[];
+  features: L[];
+  includedFinishes: L[];
+  upgrades: L[];
+  sustainability: L[];
+  faq: { q: L; a: L }[];
   featured?: boolean;
 };
 
-const commonIncluded = [
-  "Estructura de acero galvanizado y paneles estructurales fabricados en planta",
-  "Aislamiento térmico en muros, losa y cubierta",
-  "Cancelería de aluminio con doble vidrio",
-  "Instalaciones eléctricas, hidráulicas y sanitarias listas para conexión",
-  "Muebles de baño y grifería ahorradora de agua",
-  "Iluminación LED en todos los espacios",
-  "Cocina con cubierta, tarja y muebles bajos y altos",
-  "Puertas interiores, clósets y pintura",
-  "Preparación para paneles solares",
+/* ---------- Shared room / label vocabulary ---------- */
+const R = {
+  living: { es: "Estancia · Cocina", en: "Living · Kitchen" },
+  livingDiningKitchen: { es: "Estancia · Comedor · Cocina", en: "Living · Dining · Kitchen" },
+  livingDining: { es: "Sala · Comedor", en: "Living · Dining" },
+  living2: { es: "Sala", en: "Living room" },
+  dining: { es: "Comedor", en: "Dining" },
+  kitchen: { es: "Cocina", en: "Kitchen" },
+  bedroom: { es: "Recámara", en: "Bedroom" },
+  bedroom1: { es: "Recámara 1", en: "Bedroom 1" },
+  bedroom2: { es: "Recámara 2", en: "Bedroom 2" },
+  bedroom3: { es: "Recámara 3", en: "Bedroom 3" },
+  master: { es: "Recámara principal", en: "Main bedroom" },
+  bath: { es: "Baño", en: "Bathroom" },
+  bath2: { es: "Baño 2", en: "Bathroom 2" },
+  masterBath: { es: "Baño principal", en: "Main bathroom" },
+  halfBath: { es: "Medio baño", en: "Powder room" },
+  laundry: { es: "Lavado", en: "Laundry" },
+  laundryCloset: { es: "Lavado · Clóset", en: "Laundry · Closet" },
+  closet: { es: "Vestidor", en: "Walk-in closet" },
+  terrace: { es: "Terraza", en: "Terrace" },
+  coveredTerrace: { es: "Terraza cubierta", en: "Covered terrace" },
+  patio: { es: "Patio", en: "Courtyard" },
+  hall: { es: "Pasillo", en: "Hallway" },
+  stairs: { es: "Escalera", en: "Stairs" },
+  study: { es: "Estudio · Recámara 4", en: "Study · Bedroom 4" },
+  singleFloor: { es: "Planta única", en: "Single floor" },
+  groundFloor: { es: "Planta baja", en: "Ground floor" },
+  upperFloor: { es: "Planta alta", en: "Upper floor" },
+} satisfies Record<string, L>;
+
+const commonIncluded: L[] = [
+  { es: "Estructura de acero galvanizado y paneles estructurales fabricados en planta", en: "Galvanized steel structure and factory-built structural panels" },
+  { es: "Aislamiento térmico en muros, losa y cubierta", en: "Thermal insulation in walls, floor and roof" },
+  { es: "Cancelería de aluminio con doble vidrio", en: "Aluminum windows with double glazing" },
+  { es: "Instalaciones eléctricas, hidráulicas y sanitarias listas para conexión", en: "Electrical, plumbing and drainage installations ready for connection" },
+  { es: "Muebles de baño y grifería ahorradora de agua", en: "Bathroom fixtures and water-saving faucets" },
+  { es: "Iluminación LED en todos los espacios", en: "LED lighting throughout" },
+  { es: "Cocina con cubierta, tarja y muebles bajos y altos", en: "Kitchen with countertop, sink, base and wall cabinets" },
+  { es: "Puertas interiores, clósets y pintura", en: "Interior doors, closets and paint" },
+  { es: "Preparación para paneles solares", en: "Solar-ready roof and conduits" },
 ];
 
-const commonSustainability = [
-  "Envolvente térmica con aislamiento continuo",
-  "Ventilación cruzada con ventanas enfrentadas",
-  "Aleros y volados calculados para sombrear el vidrio en verano",
-  "Preparación eléctrica para sistema fotovoltaico",
-  "Bajantes pluviales listas para conectar a captación",
-  "Grifería y sanitarios de bajo consumo",
+const commonSustainability: L[] = [
+  { es: "Envolvente térmica con aislamiento continuo", en: "Thermal envelope with continuous insulation" },
+  { es: "Ventilación cruzada con ventanas enfrentadas", en: "Cross ventilation with opposing windows" },
+  { es: "Aleros y volados calculados para sombrear el vidrio en verano", en: "Eaves and overhangs sized to shade glazing in summer" },
+  { es: "Preparación eléctrica para sistema fotovoltaico", en: "Electrical provision for a photovoltaic system" },
+  { es: "Bajantes pluviales listas para conectar a captación", en: "Downpipes ready to connect to rainwater harvesting" },
+  { es: "Grifería y sanitarios de bajo consumo", en: "Low-flow fixtures and toilets" },
 ];
+
+const U = {
+  deck: { es: "Deck exterior", en: "Outdoor deck" },
+  deckWood: { es: "Terraza con deck de madera", en: "Terrace with timber deck" },
+  pergola: { es: "Pérgola", en: "Pergola" },
+  pergolaSteel: { es: "Pérgola de acero y madera", en: "Steel and timber pergola" },
+  pergolaPatio: { es: "Pérgola sobre patio", en: "Pergola over the courtyard" },
+  solar: { es: "Paneles solares", en: "Solar panels" },
+  rain: { es: "Captación pluvial", en: "Rainwater harvesting" },
+  grey: { es: "Reúso de aguas grises", en: "Greywater reuse" },
+  ac: { es: "Aire acondicionado", en: "Air conditioning" },
+  acMini: { es: "Aire acondicionado mini split", en: "Mini-split air conditioning" },
+  smart: { es: "Casa inteligente", en: "Smart home" },
+  island: { es: "Cocina con isla", en: "Kitchen island" },
+  carport: { es: "Cochera techada", en: "Covered carport" },
+  pool: { es: "Alberca", en: "Pool" },
+  poolCompact: { es: "Alberca compacta", en: "Compact pool" },
+  lift: { es: "Elevador residencial", en: "Residential lift" },
+} satisfies Record<string, L>;
 
 export const models: HomeModel[] = [
   {
     slug: "nido-45",
     name: "NIDO 45",
     family: "Nido",
-    tagline: "Un refugio compacto con una gran terraza.",
-    description:
-      "NIDO 45 concentra lo esencial en un solo volumen: una estancia con cocina integrada que se abre por completo a la terraza, una recámara con vista y un baño completo. Es la casa ideal para un terreno pequeño, una casa de descanso o una unidad de renta.",
-    idealFor: ["Casa de descanso", "Airbnb / renta", "Primera vivienda", "Casa de huéspedes"],
+    tagline: { es: "Un refugio compacto con una gran terraza.", en: "A compact retreat with a generous terrace." },
+    description: {
+      es: "NIDO 45 concentra lo esencial en un solo volumen: una estancia con cocina integrada que se abre por completo a la terraza, una recámara con vista y un baño completo. Es la casa ideal para un terreno pequeño, una casa de descanso o una unidad de renta.",
+      en: "NIDO 45 concentrates the essentials in a single volume: a living space with an integrated kitchen that opens fully onto the terrace, a bedroom with a view and a full bathroom. It's the ideal home for a small lot, a weekend house or a rental unit.",
+    },
+    idealFor: [
+      { es: "Casa de descanso", en: "Weekend home" },
+      { es: "Airbnb / renta", en: "Airbnb / rental" },
+      { es: "Primera vivienda", en: "First home" },
+      { es: "Casa de huéspedes", en: "Guest house" },
+    ],
     areaM2: 45,
     bedrooms: 1,
     bathrooms: 1,
@@ -96,37 +150,43 @@ export const models: HomeModel[] = [
     dimensions: { width: 9.0, depth: 5.0, height: 3.4 },
     buildWeeks: { min: 10, max: 14 },
     images: [
-      { src: "/images/models/nido-45-01.jpg", alt: "Fachada de NIDO 45 con recubrimiento de madera al atardecer" },
-      { src: "/images/models/nido-45-02.jpg", alt: "Recámara de NIDO 45 abierta a la terraza" },
-      { src: "/images/models/nido-45-03.jpg", alt: "Recámara con ventana de piso a techo" },
-      { src: "/images/models/nido-45-04.jpg", alt: "Cocina integrada con acabados en madera" },
+      { src: "/images/models/nido-45-01.jpg", alt: { es: "Fachada de NIDO 45 con recubrimiento de madera al atardecer", en: "NIDO 45 facade with timber cladding at dusk" } },
+      { src: "/images/models/nido-45-02.jpg", alt: { es: "Recámara de NIDO 45 abierta a la terraza", en: "NIDO 45 bedroom opening onto the terrace" } },
+      { src: "/images/models/nido-45-03.jpg", alt: { es: "Recámara con ventana de piso a techo", en: "Bedroom with floor-to-ceiling window" } },
+      { src: "/images/models/nido-45-04.jpg", alt: { es: "Cocina integrada con acabados en madera", en: "Integrated kitchen with timber finishes" } },
     ],
     floorPlan: [
       {
-        name: "Planta única",
+        name: R.singleFloor,
         width: 9.0,
         depth: 5.0,
         rooms: [
-          { name: "Estancia · Cocina", x: 0, y: 0, w: 4.8, h: 5.0 },
-          { name: "Recámara", x: 4.8, y: 0, w: 4.2, h: 3.4 },
-          { name: "Baño", x: 4.8, y: 3.4, w: 2.0, h: 1.6 },
-          { name: "Lavado", x: 6.8, y: 3.4, w: 2.2, h: 1.6 },
-          { name: "Terraza", x: 0, y: 5.0, w: 4.8, h: 2.2, open: true },
+          { name: R.living, x: 0, y: 0, w: 4.8, h: 5.0 },
+          { name: R.bedroom, x: 4.8, y: 0, w: 4.2, h: 3.4 },
+          { name: R.bath, x: 4.8, y: 3.4, w: 2.0, h: 1.6 },
+          { name: R.laundry, x: 6.8, y: 3.4, w: 2.2, h: 1.6 },
+          { name: R.terrace, x: 0, y: 5.0, w: 4.8, h: 2.2, open: true },
         ],
       },
     ],
     features: [
-      "Estancia con altura libre de 2.9 m",
-      "Ventanal corredizo de 4.8 m hacia la terraza",
-      "Recámara con clóset integrado",
-      "Cubierta con pendiente ligera y canalón oculto",
+      { es: "Estancia con altura libre de 2.9 m", en: "Living space with 2.9 m clear height" },
+      { es: "Ventanal corredizo de 4.8 m hacia la terraza", en: "4.8 m sliding glass wall onto the terrace" },
+      { es: "Recámara con clóset integrado", en: "Bedroom with built-in closet" },
+      { es: "Cubierta con pendiente ligera y canalón oculto", en: "Gently sloped roof with concealed gutter" },
     ],
     includedFinishes: commonIncluded,
-    upgrades: ["Terraza con deck de madera", "Pérgola de acero y madera", "Paneles solares", "Captación pluvial", "Aire acondicionado mini split", "Cocina con isla"],
+    upgrades: [U.deckWood, U.pergolaSteel, U.solar, U.rain, U.acMini, U.island],
     sustainability: commonSustainability,
     faq: [
-      { q: "¿Puedo poner dos NIDO 45 en un mismo terreno?", a: "Sí. Es una configuración común para renta vacacional. El equipo revisa la normativa local de densidad y las separaciones mínimas del terreno." },
-      { q: "¿Se puede ampliar después?", a: "El módulo está pensado para crecer: la terraza puede cerrarse o puede adosarse un módulo adicional de recámara con conexión por pasillo." },
+      {
+        q: { es: "¿Puedo poner dos NIDO 45 en un mismo terreno?", en: "Can I place two NIDO 45 units on the same lot?" },
+        a: { es: "Sí. Es una configuración común para renta vacacional. El equipo revisa la normativa local de densidad y las separaciones mínimas del terreno.", en: "Yes. It's a common setup for vacation rentals. The team reviews local density rules and minimum setbacks for the lot." },
+      },
+      {
+        q: { es: "¿Se puede ampliar después?", en: "Can it be extended later?" },
+        a: { es: "El módulo está pensado para crecer: la terraza puede cerrarse o puede adosarse un módulo adicional de recámara con conexión por pasillo.", en: "The module is designed to grow: the terrace can be enclosed, or an additional bedroom module can be attached via a hallway." },
+      },
     ],
     featured: true,
   },
@@ -134,10 +194,16 @@ export const models: HomeModel[] = [
     slug: "nido-65",
     name: "NIDO 65",
     family: "Nido",
-    tagline: "Dos recámaras, un solo gesto de luz.",
-    description:
-      "NIDO 65 amplía el módulo compacto con una segunda recámara sin perder la relación directa entre estancia y exterior. La cocina lineal, el área de lavado y un baño completo resuelven el día a día de una pareja o una familia pequeña.",
-    idealFor: ["Primera vivienda", "Casa de fin de semana", "Renta a largo plazo"],
+    tagline: { es: "Dos recámaras, un solo gesto de luz.", en: "Two bedrooms, one gesture of light." },
+    description: {
+      es: "NIDO 65 amplía el módulo compacto con una segunda recámara sin perder la relación directa entre estancia y exterior. La cocina lineal, el área de lavado y un baño completo resuelven el día a día de una pareja o una familia pequeña.",
+      en: "NIDO 65 extends the compact module with a second bedroom without losing the direct relationship between living space and outdoors. The linear kitchen, laundry area and a full bathroom cover the daily life of a couple or a small family.",
+    },
+    idealFor: [
+      { es: "Primera vivienda", en: "First home" },
+      { es: "Casa de fin de semana", en: "Weekend house" },
+      { es: "Renta a largo plazo", en: "Long-term rental" },
+    ],
     areaM2: 65,
     bedrooms: 2,
     bathrooms: 1,
@@ -145,37 +211,40 @@ export const models: HomeModel[] = [
     dimensions: { width: 10.8, depth: 6.0, height: 3.4 },
     buildWeeks: { min: 11, max: 15 },
     images: [
-      { src: "/images/models/nido-65-01.jpg", alt: "NIDO 65 con muro de madera y patio de acceso al anochecer" },
-      { src: "/images/models/nido-65-02.jpg", alt: "Sala con muro de vidrio hacia el jardín" },
-      { src: "/images/models/nido-65-03.jpg", alt: "Cocina con barra y acabados blancos y madera" },
-      { src: "/images/models/nido-65-04.jpg", alt: "Baño con lavabo doble y ventana al exterior" },
+      { src: "/images/models/nido-65-01.jpg", alt: { es: "NIDO 65 con muro de madera y patio de acceso al anochecer", en: "NIDO 65 with timber wall and entry courtyard at dusk" } },
+      { src: "/images/models/nido-65-02.jpg", alt: { es: "Sala con muro de vidrio hacia el jardín", en: "Living room with glass wall onto the garden" } },
+      { src: "/images/models/nido-65-03.jpg", alt: { es: "Cocina con barra y acabados blancos y madera", en: "Kitchen with breakfast bar in white and timber" } },
+      { src: "/images/models/nido-65-04.jpg", alt: { es: "Baño con lavabo doble y ventana al exterior", en: "Bathroom with double basin and window" } },
     ],
     floorPlan: [
       {
-        name: "Planta única",
+        name: R.singleFloor,
         width: 10.8,
         depth: 6.0,
         rooms: [
-          { name: "Estancia · Comedor · Cocina", x: 0, y: 0, w: 5.2, h: 6.0 },
-          { name: "Recámara 1", x: 5.2, y: 0, w: 2.8, h: 3.6 },
-          { name: "Recámara 2", x: 8.0, y: 0, w: 2.8, h: 3.6 },
-          { name: "Baño", x: 5.2, y: 3.6, w: 2.2, h: 2.4 },
-          { name: "Lavado · Clóset", x: 7.4, y: 3.6, w: 3.4, h: 2.4 },
-          { name: "Terraza", x: 0, y: 6.0, w: 5.2, h: 2.4, open: true },
+          { name: R.livingDiningKitchen, x: 0, y: 0, w: 5.2, h: 6.0 },
+          { name: R.bedroom1, x: 5.2, y: 0, w: 2.8, h: 3.6 },
+          { name: R.bedroom2, x: 8.0, y: 0, w: 2.8, h: 3.6 },
+          { name: R.bath, x: 5.2, y: 3.6, w: 2.2, h: 2.4 },
+          { name: R.laundryCloset, x: 7.4, y: 3.6, w: 3.4, h: 2.4 },
+          { name: R.terrace, x: 0, y: 6.0, w: 5.2, h: 2.4, open: true },
         ],
       },
     ],
     features: [
-      "Muro de vidrio de 5.2 m en la estancia",
-      "Recámaras con ventanas enfrentadas para ventilación cruzada",
-      "Área de lavado independiente",
-      "Fachada ventilada en madera o metal",
+      { es: "Muro de vidrio de 5.2 m en la estancia", en: "5.2 m glass wall in the living space" },
+      { es: "Recámaras con ventanas enfrentadas para ventilación cruzada", en: "Bedrooms with opposing windows for cross ventilation" },
+      { es: "Área de lavado independiente", en: "Separate laundry area" },
+      { es: "Fachada ventilada en madera o metal", en: "Ventilated facade in timber or metal" },
     ],
     includedFinishes: commonIncluded,
-    upgrades: ["Deck exterior", "Pérgola", "Paneles solares", "Captación pluvial", "Reúso de aguas grises", "Aire acondicionado", "Casa inteligente"],
+    upgrades: [U.deck, U.pergola, U.solar, U.rain, U.grey, U.ac, U.smart],
     sustainability: commonSustainability,
     faq: [
-      { q: "¿Las recámaras se pueden unir en una sola?", a: "Sí. El muro divisorio no es estructural, por lo que puede omitirse desde fábrica para crear una recámara principal con vestidor." },
+      {
+        q: { es: "¿Las recámaras se pueden unir en una sola?", en: "Can the bedrooms be merged into one?" },
+        a: { es: "Sí. El muro divisorio no es estructural, por lo que puede omitirse desde fábrica para crear una recámara principal con vestidor.", en: "Yes. The dividing wall isn't structural, so it can be omitted at the factory to create a main bedroom with a walk-in closet." },
+      },
     ],
     featured: true,
   },
@@ -183,10 +252,16 @@ export const models: HomeModel[] = [
     slug: "casa-85",
     name: "CASA 85",
     family: "Casa",
-    tagline: "La casa familiar en su expresión más clara.",
-    description:
-      "CASA 85 organiza dos recámaras, dos baños completos y una estancia generosa alrededor de un eje de luz. La cocina se separa ligeramente de la sala sin cerrarse, y la recámara principal tiene baño propio. Es nuestro modelo más solicitado para vivienda principal.",
-    idealFor: ["Vivienda principal", "Familia joven", "Casa de campo"],
+    tagline: { es: "La casa familiar en su expresión más clara.", en: "The family home in its clearest form." },
+    description: {
+      es: "CASA 85 organiza dos recámaras, dos baños completos y una estancia generosa alrededor de un eje de luz. La cocina se separa ligeramente de la sala sin cerrarse, y la recámara principal tiene baño propio. Es nuestro modelo más solicitado para vivienda principal.",
+      en: "CASA 85 arranges two bedrooms, two full bathrooms and a generous living space around an axis of light. The kitchen is slightly set apart from the living room without being closed off, and the main bedroom has its own bathroom. It's our most requested model for a primary residence.",
+    },
+    idealFor: [
+      { es: "Vivienda principal", en: "Primary residence" },
+      { es: "Familia joven", en: "Young family" },
+      { es: "Casa de campo", en: "Country house" },
+    ],
     areaM2: 85,
     bedrooms: 2,
     bathrooms: 2,
@@ -194,40 +269,46 @@ export const models: HomeModel[] = [
     dimensions: { width: 12.0, depth: 7.1, height: 3.6 },
     buildWeeks: { min: 12, max: 16 },
     images: [
-      { src: "/images/models/casa-85-01.jpg", alt: "CASA 85 con fachada de vidrio y madera bajo un árbol" },
-      { src: "/images/models/casa-85-02.jpg", alt: "Sala con muro de madera y vista al jardín" },
-      { src: "/images/models/casa-85-03.jpg", alt: "Comedor con puertas corredizas de piso a techo" },
-      { src: "/images/models/casa-85-04.jpg", alt: "Estancia luminosa con doble altura parcial" },
+      { src: "/images/models/casa-85-01.jpg", alt: { es: "CASA 85 con fachada de vidrio y madera bajo un árbol", en: "CASA 85 with glass and timber facade under a tree" } },
+      { src: "/images/models/casa-85-02.jpg", alt: { es: "Sala con muro de madera y vista al jardín", en: "Living room with timber wall and garden view" } },
+      { src: "/images/models/casa-85-03.jpg", alt: { es: "Comedor con puertas corredizas de piso a techo", en: "Dining room with floor-to-ceiling sliding doors" } },
+      { src: "/images/models/casa-85-04.jpg", alt: { es: "Estancia luminosa con doble altura parcial", en: "Bright living space with partial double height" } },
     ],
     floorPlan: [
       {
-        name: "Planta única",
+        name: R.singleFloor,
         width: 12.0,
         depth: 7.1,
         rooms: [
-          { name: "Cocina", x: 0, y: 0, w: 5.6, h: 2.6 },
-          { name: "Sala · Comedor", x: 0, y: 2.6, w: 5.6, h: 4.5 },
-          { name: "Recámara principal", x: 5.6, y: 0, w: 3.6, h: 4.0 },
-          { name: "Baño principal", x: 5.6, y: 4.0, w: 2.0, h: 3.1 },
-          { name: "Lavado", x: 7.6, y: 4.0, w: 1.6, h: 3.1 },
-          { name: "Recámara 2", x: 9.2, y: 0, w: 2.8, h: 4.0 },
-          { name: "Baño 2", x: 9.2, y: 4.0, w: 2.8, h: 3.1 },
-          { name: "Terraza", x: 0, y: 7.1, w: 5.6, h: 2.6, open: true },
+          { name: R.kitchen, x: 0, y: 0, w: 5.6, h: 2.6 },
+          { name: R.livingDining, x: 0, y: 2.6, w: 5.6, h: 4.5 },
+          { name: R.master, x: 5.6, y: 0, w: 3.6, h: 4.0 },
+          { name: R.masterBath, x: 5.6, y: 4.0, w: 2.0, h: 3.1 },
+          { name: R.laundry, x: 7.6, y: 4.0, w: 1.6, h: 3.1 },
+          { name: R.bedroom2, x: 9.2, y: 0, w: 2.8, h: 4.0 },
+          { name: R.bath2, x: 9.2, y: 4.0, w: 2.8, h: 3.1 },
+          { name: R.terrace, x: 0, y: 7.1, w: 5.6, h: 2.6, open: true },
         ],
       },
     ],
     features: [
-      "Recámara principal con baño y clóset vestidor",
-      "Cocina con barra hacia el comedor",
-      "Altura libre de 3.0 m en estancia",
-      "Alero corrido de 1.2 m sobre la terraza",
+      { es: "Recámara principal con baño y clóset vestidor", en: "Main bedroom with en-suite bathroom and walk-in closet" },
+      { es: "Cocina con barra hacia el comedor", en: "Kitchen with bar facing the dining room" },
+      { es: "Altura libre de 3.0 m en estancia", en: "3.0 m clear height in the living space" },
+      { es: "Alero corrido de 1.2 m sobre la terraza", en: "Continuous 1.2 m eave over the terrace" },
     ],
     includedFinishes: commonIncluded,
-    upgrades: ["Deck exterior", "Pérgola", "Paneles solares", "Captación pluvial", "Reúso de aguas grises", "Aire acondicionado", "Casa inteligente", "Cocina con isla"],
+    upgrades: [U.deck, U.pergola, U.solar, U.rain, U.grey, U.ac, U.smart, U.island],
     sustainability: commonSustainability,
     faq: [
-      { q: "¿Puedo convertir la Recámara 2 en estudio?", a: "Sí. Puede entregarse sin clóset y con un ventanal adicional para usarla como estudio o consultorio." },
-      { q: "¿Se puede agregar una tercera recámara?", a: "CASA 110 es la versión de tres recámaras del mismo esquema. También puede adosarse un módulo posterior a CASA 85." },
+      {
+        q: { es: "¿Puedo convertir la Recámara 2 en estudio?", en: "Can Bedroom 2 become a study?" },
+        a: { es: "Sí. Puede entregarse sin clóset y con un ventanal adicional para usarla como estudio o consultorio.", en: "Yes. It can be delivered without a closet and with an extra window to use as a study or home office." },
+      },
+      {
+        q: { es: "¿Se puede agregar una tercera recámara?", en: "Can a third bedroom be added?" },
+        a: { es: "CASA 110 es la versión de tres recámaras del mismo esquema. También puede adosarse un módulo posterior a CASA 85.", en: "CASA 110 is the three-bedroom version of the same scheme. A rear module can also be attached to CASA 85." },
+      },
     ],
     featured: true,
   },
@@ -235,10 +316,16 @@ export const models: HomeModel[] = [
     slug: "casa-110",
     name: "CASA 110",
     family: "Casa",
-    tagline: "Tres recámaras y una estancia que se extiende al jardín.",
-    description:
-      "CASA 110 está pensada para una familia que quiere espacio sin complicaciones: tres recámaras, dos baños, cocina con área de lavado y una sala-comedor con más de seis metros de frente al jardín. El volumen se puede girar para orientar las recámaras al norte.",
-    idealFor: ["Vivienda principal", "Familia con hijos", "Casa de campo"],
+    tagline: { es: "Tres recámaras y una estancia que se extiende al jardín.", en: "Three bedrooms and a living space that extends into the garden." },
+    description: {
+      es: "CASA 110 está pensada para una familia que quiere espacio sin complicaciones: tres recámaras, dos baños, cocina con área de lavado y una sala-comedor con más de seis metros de frente al jardín. El volumen se puede girar para orientar las recámaras al norte.",
+      en: "CASA 110 is designed for a family that wants space without complications: three bedrooms, two bathrooms, a kitchen with laundry area and a living-dining room with more than six metres facing the garden. The volume can be rotated to orient the bedrooms north.",
+    },
+    idealFor: [
+      { es: "Vivienda principal", en: "Primary residence" },
+      { es: "Familia con hijos", en: "Family with children" },
+      { es: "Casa de campo", en: "Country house" },
+    ],
     areaM2: 110,
     bedrooms: 3,
     bathrooms: 2,
@@ -246,40 +333,43 @@ export const models: HomeModel[] = [
     dimensions: { width: 14.0, depth: 7.9, height: 3.6 },
     buildWeeks: { min: 13, max: 18 },
     images: [
-      { src: "/images/models/casa-110-01.jpg", alt: "CASA 110 con fachada blanca y volumen en terracota" },
-      { src: "/images/models/casa-110-02.jpg", alt: "Vista frontal de CASA 110 con acceso y cochera" },
-      { src: "/images/models/casa-110-03.jpg", alt: "Sala con muro de madera y cocina integrada" },
-      { src: "/images/models/casa-110-04.jpg", alt: "Estancia con puertas de vidrio abiertas hacia la terraza" },
+      { src: "/images/models/casa-110-01.jpg", alt: { es: "CASA 110 con fachada blanca y volumen en terracota", en: "CASA 110 with white facade and terracotta volume" } },
+      { src: "/images/models/casa-110-02.jpg", alt: { es: "Vista frontal de CASA 110 con acceso y cochera", en: "Front view of CASA 110 with entrance and carport" } },
+      { src: "/images/models/casa-110-03.jpg", alt: { es: "Sala con muro de madera y cocina integrada", en: "Living room with timber wall and integrated kitchen" } },
+      { src: "/images/models/casa-110-04.jpg", alt: { es: "Estancia con puertas de vidrio abiertas hacia la terraza", en: "Living space with glass doors open to the terrace" } },
     ],
     floorPlan: [
       {
-        name: "Planta única",
+        name: R.singleFloor,
         width: 14.0,
         depth: 7.9,
         rooms: [
-          { name: "Cocina", x: 0, y: 0, w: 4.6, h: 3.0 },
-          { name: "Lavado", x: 4.6, y: 0, w: 1.6, h: 3.0 },
-          { name: "Sala · Comedor", x: 0, y: 3.0, w: 6.2, h: 4.9 },
-          { name: "Recámara principal", x: 6.2, y: 0, w: 4.0, h: 4.2 },
-          { name: "Baño principal", x: 6.2, y: 4.2, w: 2.0, h: 3.7 },
-          { name: "Baño 2", x: 8.2, y: 4.2, w: 2.0, h: 3.7 },
-          { name: "Recámara 2", x: 10.2, y: 0, w: 3.8, h: 3.9 },
-          { name: "Recámara 3", x: 10.2, y: 3.9, w: 3.8, h: 4.0 },
-          { name: "Terraza", x: 0, y: 7.9, w: 6.2, h: 2.8, open: true },
+          { name: R.kitchen, x: 0, y: 0, w: 4.6, h: 3.0 },
+          { name: R.laundry, x: 4.6, y: 0, w: 1.6, h: 3.0 },
+          { name: R.livingDining, x: 0, y: 3.0, w: 6.2, h: 4.9 },
+          { name: R.master, x: 6.2, y: 0, w: 4.0, h: 4.2 },
+          { name: R.masterBath, x: 6.2, y: 4.2, w: 2.0, h: 3.7 },
+          { name: R.bath2, x: 8.2, y: 4.2, w: 2.0, h: 3.7 },
+          { name: R.bedroom2, x: 10.2, y: 0, w: 3.8, h: 3.9 },
+          { name: R.bedroom3, x: 10.2, y: 3.9, w: 3.8, h: 4.0 },
+          { name: R.terrace, x: 0, y: 7.9, w: 6.2, h: 2.8, open: true },
         ],
       },
     ],
     features: [
-      "Sala-comedor con 6.2 m de ventanal hacia el jardín",
-      "Recámara principal con baño propio",
-      "Cocina cerrada opcional",
-      "Cubierta preparada para 12 paneles solares",
+      { es: "Sala-comedor con 6.2 m de ventanal hacia el jardín", en: "Living-dining room with 6.2 m of glazing onto the garden" },
+      { es: "Recámara principal con baño propio", en: "Main bedroom with en-suite bathroom" },
+      { es: "Cocina cerrada opcional", en: "Optional closed kitchen" },
+      { es: "Cubierta preparada para 12 paneles solares", en: "Roof prepared for 12 solar panels" },
     ],
     includedFinishes: commonIncluded,
-    upgrades: ["Deck exterior", "Pérgola", "Paneles solares", "Captación pluvial", "Reúso de aguas grises", "Aire acondicionado", "Casa inteligente", "Cochera techada"],
+    upgrades: [U.deck, U.pergola, U.solar, U.rain, U.grey, U.ac, U.smart, U.carport],
     sustainability: commonSustainability,
     faq: [
-      { q: "¿Se puede entregar con la cocina cerrada?", a: "Sí. La cocina puede cerrarse con un muro ligero y puerta corrediza sin afectar la estructura." },
+      {
+        q: { es: "¿Se puede entregar con la cocina cerrada?", en: "Can it be delivered with a closed kitchen?" },
+        a: { es: "Sí. La cocina puede cerrarse con un muro ligero y puerta corrediza sin afectar la estructura.", en: "Yes. The kitchen can be closed with a lightweight wall and sliding door without affecting the structure." },
+      },
     ],
     featured: true,
   },
@@ -287,10 +377,16 @@ export const models: HomeModel[] = [
     slug: "patio-140",
     name: "PATIO 140",
     family: "Patio",
-    tagline: "Una casa organizada alrededor de su patio.",
-    description:
-      "PATIO 140 recupera la tradición de la casa mexicana con patio central: todos los espacios miran hacia un jardín interior protegido que ventila e ilumina la casa. Tres recámaras, dos baños y medio, cocina abierta y una estancia de doble frente.",
-    idealFor: ["Vivienda principal", "Terrenos urbanos con colindancias", "Casa de descanso"],
+    tagline: { es: "Una casa organizada alrededor de su patio.", en: "A house organized around its courtyard." },
+    description: {
+      es: "PATIO 140 recupera la tradición de la casa mexicana con patio central: todos los espacios miran hacia un jardín interior protegido que ventila e ilumina la casa. Tres recámaras, dos baños y medio, cocina abierta y una estancia de doble frente.",
+      en: "PATIO 140 revives the tradition of the Mexican courtyard house: every space looks onto a protected inner garden that ventilates and lights the home. Three bedrooms, two and a half bathrooms, an open kitchen and a living space with two fronts.",
+    },
+    idealFor: [
+      { es: "Vivienda principal", en: "Primary residence" },
+      { es: "Terrenos urbanos con colindancias", en: "Urban lots with party walls" },
+      { es: "Casa de descanso", en: "Weekend home" },
+    ],
     areaM2: 140,
     bedrooms: 3,
     bathrooms: 2.5,
@@ -298,41 +394,44 @@ export const models: HomeModel[] = [
     dimensions: { width: 16.0, depth: 9.0, height: 3.8 },
     buildWeeks: { min: 14, max: 20 },
     images: [
-      { src: "/images/models/patio-140-01.jpg", alt: "PATIO 140 con cubierta volada y jardín al anochecer" },
-      { src: "/images/models/patio-140-02.jpg", alt: "Fachada de PATIO 140 bajo un árbol" },
-      { src: "/images/models/patio-140-03.jpg", alt: "Sala en madera abierta al patio interior" },
-      { src: "/images/models/patio-140-04.jpg", alt: "Estancia con deck exterior y cocina integrada" },
+      { src: "/images/models/patio-140-01.jpg", alt: { es: "PATIO 140 con cubierta volada y jardín al anochecer", en: "PATIO 140 with cantilevered roof and garden at dusk" } },
+      { src: "/images/models/patio-140-02.jpg", alt: { es: "Fachada de PATIO 140 bajo un árbol", en: "PATIO 140 facade under a tree" } },
+      { src: "/images/models/patio-140-03.jpg", alt: { es: "Sala en madera abierta al patio interior", en: "Timber living room open to the inner courtyard" } },
+      { src: "/images/models/patio-140-04.jpg", alt: { es: "Estancia con deck exterior y cocina integrada", en: "Living space with outdoor deck and integrated kitchen" } },
     ],
     floorPlan: [
       {
-        name: "Planta única",
+        name: R.singleFloor,
         width: 16.0,
         depth: 9.0,
         rooms: [
-          { name: "Sala · Comedor", x: 0, y: 0, w: 5.4, h: 9.0 },
-          { name: "Cocina", x: 5.4, y: 0, w: 4.2, h: 3.0 },
-          { name: "Patio", x: 5.4, y: 3.0, w: 4.2, h: 3.6, open: true },
-          { name: "Pasillo", x: 5.4, y: 6.6, w: 4.2, h: 2.4 },
-          { name: "Recámara principal", x: 9.6, y: 0, w: 3.8, h: 4.4 },
-          { name: "Recámara 2", x: 13.4, y: 0, w: 2.6, h: 4.4 },
-          { name: "Baño principal", x: 9.6, y: 4.4, w: 2.0, h: 2.2 },
-          { name: "Medio baño", x: 9.6, y: 6.6, w: 2.0, h: 2.4 },
-          { name: "Baño 2", x: 11.6, y: 4.4, w: 1.8, h: 4.6 },
-          { name: "Recámara 3", x: 13.4, y: 4.4, w: 2.6, h: 4.6 },
+          { name: R.livingDining, x: 0, y: 0, w: 5.4, h: 9.0 },
+          { name: R.kitchen, x: 5.4, y: 0, w: 4.2, h: 3.0 },
+          { name: R.patio, x: 5.4, y: 3.0, w: 4.2, h: 3.6, open: true },
+          { name: R.hall, x: 5.4, y: 6.6, w: 4.2, h: 2.4 },
+          { name: R.master, x: 9.6, y: 0, w: 3.8, h: 4.4 },
+          { name: R.bedroom2, x: 13.4, y: 0, w: 2.6, h: 4.4 },
+          { name: R.masterBath, x: 9.6, y: 4.4, w: 2.0, h: 2.2 },
+          { name: R.halfBath, x: 9.6, y: 6.6, w: 2.0, h: 2.4 },
+          { name: R.bath2, x: 11.6, y: 4.4, w: 1.8, h: 4.6 },
+          { name: R.bedroom3, x: 13.4, y: 4.4, w: 2.6, h: 4.6 },
         ],
       },
     ],
     features: [
-      "Patio central de 15 m² con vegetación",
-      "Estancia con doble frente: jardín y patio",
-      "Medio baño para visitas",
-      "Cubierta a un agua con alero de 1.5 m",
+      { es: "Patio central de 15 m² con vegetación", en: "15 m² planted central courtyard" },
+      { es: "Estancia con doble frente: jardín y patio", en: "Living space with two fronts: garden and courtyard" },
+      { es: "Medio baño para visitas", en: "Powder room for guests" },
+      { es: "Cubierta a un agua con alero de 1.5 m", en: "Mono-pitch roof with 1.5 m eave" },
     ],
     includedFinishes: commonIncluded,
-    upgrades: ["Deck exterior", "Pérgola sobre patio", "Paneles solares", "Captación pluvial", "Reúso de aguas grises", "Aire acondicionado", "Casa inteligente", "Alberca compacta"],
-    sustainability: [...commonSustainability, "Patio interior que enfría por convección y sombrea la estancia"],
+    upgrades: [U.deck, U.pergolaPatio, U.solar, U.rain, U.grey, U.ac, U.smart, U.poolCompact],
+    sustainability: [...commonSustainability, { es: "Patio interior que enfría por convección y sombrea la estancia", en: "Inner courtyard that cools by convection and shades the living space" }],
     faq: [
-      { q: "¿El patio se puede techar?", a: "Puede cubrirse parcialmente con una pérgola de lamas o un vidrio, manteniendo la ventilación." },
+      {
+        q: { es: "¿El patio se puede techar?", en: "Can the courtyard be roofed?" },
+        a: { es: "Puede cubrirse parcialmente con una pérgola de lamas o un vidrio, manteniendo la ventilación.", en: "It can be partially covered with a louvered pergola or glass while keeping the ventilation." },
+      },
     ],
     featured: true,
   },
@@ -340,10 +439,16 @@ export const models: HomeModel[] = [
     slug: "patio-180",
     name: "PATIO 180",
     family: "Patio",
-    tagline: "Dos niveles, cuatro recámaras y una terraza sobre el paisaje.",
-    description:
-      "PATIO 180 es nuestra casa de dos niveles: en planta baja la vida social se abre al jardín con sala, comedor, cocina y un estudio que puede ser cuarta recámara; en planta alta, tres recámaras con la principal en suite y una terraza cubierta. Pensada para familias grandes o para quien recibe visitas con frecuencia.",
-    idealFor: ["Familia grande", "Casa de descanso para varias familias", "Terreno con vistas"],
+    tagline: { es: "Dos niveles, cuatro recámaras y una terraza sobre el paisaje.", en: "Two stories, four bedrooms and a terrace over the landscape." },
+    description: {
+      es: "PATIO 180 es nuestra casa de dos niveles: en planta baja la vida social se abre al jardín con sala, comedor, cocina y un estudio que puede ser cuarta recámara; en planta alta, tres recámaras con la principal en suite y una terraza cubierta. Pensada para familias grandes o para quien recibe visitas con frecuencia.",
+      en: "PATIO 180 is our two-story home: on the ground floor, social life opens to the garden with living room, dining room, kitchen and a study that can become a fourth bedroom; upstairs, three bedrooms with the main one en suite and a covered terrace. Designed for large families or frequent hosts.",
+    },
+    idealFor: [
+      { es: "Familia grande", en: "Large family" },
+      { es: "Casa de descanso para varias familias", en: "Weekend home for several families" },
+      { es: "Terreno con vistas", en: "Lot with views" },
+    ],
     areaM2: 180,
     bedrooms: 4,
     bathrooms: 3,
@@ -351,55 +456,58 @@ export const models: HomeModel[] = [
     dimensions: { width: 12.0, depth: 8.0, height: 6.8 },
     buildWeeks: { min: 16, max: 22 },
     images: [
-      { src: "/images/models/patio-180-01.jpg", alt: "PATIO 180 de dos niveles con terraza y alberca" },
-      { src: "/images/models/patio-180-02.jpg", alt: "Vista del jardín y la fachada blanca con madera" },
-      { src: "/images/models/patio-180-03.jpg", alt: "Estancia de doble altura con escalera y vista a la alberca" },
-      { src: "/images/models/patio-180-04.jpg", alt: "Escalera de madera y acero con iluminación natural" },
+      { src: "/images/models/patio-180-01.jpg", alt: { es: "PATIO 180 de dos niveles con terraza y alberca", en: "Two-story PATIO 180 with terrace and pool" } },
+      { src: "/images/models/patio-180-02.jpg", alt: { es: "Vista del jardín y la fachada blanca con madera", en: "View of the garden and the white and timber facade" } },
+      { src: "/images/models/patio-180-03.jpg", alt: { es: "Estancia de doble altura con escalera y vista a la alberca", en: "Double-height living space with staircase and pool view" } },
+      { src: "/images/models/patio-180-04.jpg", alt: { es: "Escalera de madera y acero con iluminación natural", en: "Timber and steel staircase with natural light" } },
     ],
     floorPlan: [
       {
-        name: "Planta baja",
+        name: R.groundFloor,
         width: 12.0,
         depth: 8.0,
         rooms: [
-          { name: "Sala", x: 0, y: 0, w: 5.0, h: 8.0 },
-          { name: "Comedor", x: 5.0, y: 0, w: 4.0, h: 4.0 },
-          { name: "Cocina", x: 5.0, y: 4.0, w: 4.0, h: 4.0 },
-          { name: "Medio baño", x: 9.0, y: 0, w: 1.6, h: 2.2 },
-          { name: "Lavado", x: 9.0, y: 2.2, w: 1.6, h: 2.0 },
-          { name: "Estudio · Recámara 4", x: 9.0, y: 4.2, w: 3.0, h: 3.8 },
-          { name: "Escalera", x: 10.6, y: 0, w: 1.4, h: 4.2 },
-          { name: "Terraza", x: 0, y: 8.0, w: 9.0, h: 3.0, open: true },
+          { name: R.living2, x: 0, y: 0, w: 5.0, h: 8.0 },
+          { name: R.dining, x: 5.0, y: 0, w: 4.0, h: 4.0 },
+          { name: R.kitchen, x: 5.0, y: 4.0, w: 4.0, h: 4.0 },
+          { name: R.halfBath, x: 9.0, y: 0, w: 1.6, h: 2.2 },
+          { name: R.laundry, x: 9.0, y: 2.2, w: 1.6, h: 2.0 },
+          { name: R.study, x: 9.0, y: 4.2, w: 3.0, h: 3.8 },
+          { name: R.stairs, x: 10.6, y: 0, w: 1.4, h: 4.2 },
+          { name: R.terrace, x: 0, y: 8.0, w: 9.0, h: 3.0, open: true },
         ],
       },
       {
-        name: "Planta alta",
+        name: R.upperFloor,
         width: 12.0,
         depth: 7.0,
         rooms: [
-          { name: "Recámara principal", x: 0, y: 0, w: 5.0, h: 4.5 },
-          { name: "Vestidor", x: 0, y: 4.5, w: 2.5, h: 2.5 },
-          { name: "Baño principal", x: 2.5, y: 4.5, w: 2.5, h: 2.5 },
-          { name: "Recámara 2", x: 5.0, y: 0, w: 3.5, h: 4.0 },
-          { name: "Recámara 3", x: 8.5, y: 0, w: 3.5, h: 4.0 },
-          { name: "Baño 2", x: 5.0, y: 4.0, w: 2.5, h: 3.0 },
-          { name: "Pasillo", x: 7.5, y: 4.0, w: 3.1, h: 3.0 },
-          { name: "Escalera", x: 10.6, y: 4.0, w: 1.4, h: 3.0 },
-          { name: "Terraza cubierta", x: 12.0, y: 0, w: 3.0, h: 4.0, open: true },
+          { name: R.master, x: 0, y: 0, w: 5.0, h: 4.5 },
+          { name: R.closet, x: 0, y: 4.5, w: 2.5, h: 2.5 },
+          { name: R.masterBath, x: 2.5, y: 4.5, w: 2.5, h: 2.5 },
+          { name: R.bedroom2, x: 5.0, y: 0, w: 3.5, h: 4.0 },
+          { name: R.bedroom3, x: 8.5, y: 0, w: 3.5, h: 4.0 },
+          { name: R.bath2, x: 5.0, y: 4.0, w: 2.5, h: 3.0 },
+          { name: R.hall, x: 7.5, y: 4.0, w: 3.1, h: 3.0 },
+          { name: R.stairs, x: 10.6, y: 4.0, w: 1.4, h: 3.0 },
+          { name: R.coveredTerrace, x: 12.0, y: 0, w: 3.0, h: 4.0, open: true },
         ],
       },
     ],
     features: [
-      "Sala de doble altura con ventanal de 8 m",
-      "Recámara principal en suite con vestidor",
-      "Estudio en planta baja convertible en recámara",
-      "Terraza cubierta en planta alta",
+      { es: "Sala de doble altura con ventanal de 8 m", en: "Double-height living room with 8 m of glazing" },
+      { es: "Recámara principal en suite con vestidor", en: "En-suite main bedroom with walk-in closet" },
+      { es: "Estudio en planta baja convertible en recámara", en: "Ground-floor study convertible into a bedroom" },
+      { es: "Terraza cubierta en planta alta", en: "Covered terrace on the upper floor" },
     ],
     includedFinishes: commonIncluded,
-    upgrades: ["Deck exterior", "Pérgola", "Paneles solares", "Captación pluvial", "Reúso de aguas grises", "Aire acondicionado", "Casa inteligente", "Alberca", "Elevador residencial"],
-    sustainability: [...commonSustainability, "Terraza cubierta que sombrea el ventanal de planta baja"],
+    upgrades: [U.deck, U.pergola, U.solar, U.rain, U.grey, U.ac, U.smart, U.pool, U.lift],
+    sustainability: [...commonSustainability, { es: "Terraza cubierta que sombrea el ventanal de planta baja", en: "Covered terrace that shades the ground-floor glazing" }],
     faq: [
-      { q: "¿Cómo se transporta una casa de dos niveles?", a: "Se fabrica por módulos independientes por nivel; planta alta y planta baja viajan por separado y se ensamblan en sitio con grúa." },
+      {
+        q: { es: "¿Cómo se transporta una casa de dos niveles?", en: "How is a two-story house transported?" },
+        a: { es: "Se fabrica por módulos independientes por nivel; planta alta y planta baja viajan por separado y se ensamblan en sitio con grúa.", en: "It's fabricated as independent modules per floor; the upper and ground floors travel separately and are assembled on site with a crane." },
+      },
     ],
     featured: true,
   },

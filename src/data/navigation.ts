@@ -1,39 +1,43 @@
-export type NavLink = { label: string; href: string; description?: string };
+import type { RouteKey } from "@/i18n/routes";
+import type { Dictionary } from "@/i18n/dictionaries/es";
 
-export const mainNav: NavLink[] = [
-  { label: "Modelos", href: "/modelos" },
-  { label: "Cómo funciona", href: "/como-funciona" },
-  { label: "Diseño", href: "/diseño" },
-  { label: "Sustentabilidad", href: "/sustentabilidad" },
-  { label: "Desarrolladores", href: "/desarrolladores" },
-  { label: "Preguntas", href: "/preguntas-frecuentes" },
+/** Main navigation: route key + dictionary label key. */
+export const mainNav: { route: RouteKey; label: keyof Dictionary["nav"] }[] = [
+  { route: "models", label: "models" },
+  { route: "process", label: "process" },
+  { route: "design", label: "design" },
+  { route: "sustainability", label: "sustainability" },
+  { route: "developers", label: "developers" },
+  { route: "faq", label: "faq" },
 ];
 
-export const footerNav: { title: string; links: NavLink[] }[] = [
+type FooterLink = { route: RouteKey; label: keyof Dictionary["footer"]["links"] };
+
+export const footerNav: { group: keyof Dictionary["footer"]["groups"]; links: FooterLink[] }[] = [
   {
-    title: "Casas",
+    group: "homes",
     links: [
-      { label: "Todos los modelos", href: "/modelos" },
-      { label: "Cotizador", href: "/cotizador" },
-      { label: "Diseño y acabados", href: "/diseño" },
-      { label: "Proyectos", href: "/proyectos" },
+      { route: "models", label: "allModels" },
+      { route: "estimator", label: "estimator" },
+      { route: "design", label: "design" },
+      { route: "projects", label: "projects" },
     ],
   },
   {
-    title: "Proceso",
+    group: "process",
     links: [
-      { label: "Cómo funciona", href: "/como-funciona" },
-      { label: "Sustentabilidad", href: "/sustentabilidad" },
-      { label: "Preguntas frecuentes", href: "/preguntas-frecuentes" },
-      { label: "Desarrolladores", href: "/desarrolladores" },
+      { route: "process", label: "process" },
+      { route: "sustainability", label: "sustainability" },
+      { route: "faq", label: "faq" },
+      { route: "developers", label: "developers" },
     ],
   },
   {
-    title: "Contacto",
+    group: "contact",
     links: [
-      { label: "Cotizar mi casa", href: "/cotizador" },
-      { label: "Contacto", href: "/contacto" },
-      { label: "Aviso de privacidad", href: "/aviso-de-privacidad" },
+      { route: "estimator", label: "quote" },
+      { route: "contact", label: "contact" },
+      { route: "privacy", label: "privacy" },
     ],
   },
 ];

@@ -1,5 +1,6 @@
 import type { Floor } from "@/data/models";
 import { cn } from "@/lib/utils";
+import { fill, t, type Dictionary, type Locale } from "@/i18n";
 
 const SCALE = 40; // px per metre in the viewBox
 const PAD = 1.4; // metres of padding for dimension lines
@@ -8,7 +9,8 @@ const PAD = 1.4; // metres of padding for dimension lines
  * Schematic floor plan rendered from room geometry in the model data.
  * TODO: replace with the architect’s actual floor plans (SVG/PNG) when available.
  */
-export function FloorPlan({ floor, className }: { floor: Floor; className?: string }) {
+export function FloorPlan({ floor, className, locale, labels }: { floor: Floor; className?: string; locale: Locale; labels: Dictionary["floorPlan"] }) {
+  const floorName = t(floor.name, locale);
   const maxX = Math.max(floor.width, ...floor.rooms.map((r) => r.x + r.w));
   const maxY = Math.max(floor.depth, ...floor.rooms.map((r) => r.y + r.h));
   const minX = Math.min(0, ...floor.rooms.map((r) => r.x));
@@ -17,11 +19,11 @@ export function FloorPlan({ floor, className }: { floor: Floor; className?: stri
   const vbY = (minY - PAD) * SCALE;
   const vbW = (maxX - minX + PAD * 2) * SCALE;
   const vbH = (maxY - minY + PAD * 2) * SCALE;
-  const patternId = `hatch-${floor.name.replace(/\s+/g, "-").toLowerCase()}`;
+  const patternId = `hatch-${floor.name.es.replace(/\s+/g, "-").toLowerCase()}`;
 
   return (
     <figure className={cn("rounded-[1.25rem] border border-ink/10 bg-limestone-50 p-4 sm:p-6", className)}>
-      <svg viewBox={`${vbX} ${vbY} ${vbW} ${vbH}`} role="img" aria-label={`Planta esquemática: ${floor.name}, ${floor.width} por ${floor.depth} metros`} className="h-auto w-full">
+      <svg viewBox={`${vbX} ${vbY} ${vbW} ${vbH}`} role="img" aria-label={fill(labels.aria, { name: floorName, width: floor.width, depth: floor.depth })} className="h-auto w-full">
         <defs>
           <pattern id={patternId} width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
             <line x1="0" y1="0" x2="0" y2="8" stroke="#8b8378" strokeWidth="1" opacity="0.5" />
@@ -38,9 +40,10 @@ export function FloorPlan({ floor, className }: { floor: Floor; className?: stri
           const narrow = r.w < 1.9 && r.h > r.w;
           const fontSize = area < 5 ? 10 : 13;
           const availableWidth = (narrow ? h : w) - 8;
-          const lines = wrapLabel(r.name, fontSize, availableWidth);
+          const roomName = t(r.name, locale);
+          const lines = wrapLabel(roomName, fontSize, availableWidth);
           return (
-            <g key={r.name}>
+            <g key={r.name.es}>
               <rect x={x} y={y} width={w} height={h} fill={r.open ? `url(#${patternId})` : "#faf7f1"} stroke="#1a1816" strokeWidth={r.open ? 1 : 1.5} strokeDasharray={r.open ? "4 3" : undefined} />
               <text
                 x={x + w / 2}
@@ -75,9 +78,9 @@ export function FloorPlan({ floor, className }: { floor: Floor; className?: stri
         <Dimension vertical y1={0} y2={floor.depth * SCALE} x={(minX - 0.7) * SCALE} label={`${floor.depth.toFixed(1)} m`} />
       </svg>
       <figcaption className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs text-stone">
-        <span>{floor.name} · planta esquemática, no a escala constructiva</span>
+        <span>{floorName} · {labels.caption}</span>
         <span className="inline-flex items-center gap-2">
-          <span className="inline-block h-3 w-5 border border-dashed border-ink/60" style={{ backgroundImage: "repeating-linear-gradient(45deg,#8b8378 0 1px,transparent 1px 5px)" }} aria-hidden /> Área exterior
+          <span className="inline-block h-3 w-5 border border-dashed border-ink/60" style={{ backgroundImage: "repeating-linear-gradient(45deg,#8b8378 0 1px,transparent 1px 5px)" }} aria-hidden /> {labels.outdoor}
         </span>
       </figcaption>
     </figure>

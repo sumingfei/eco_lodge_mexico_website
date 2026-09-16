@@ -1,6 +1,6 @@
 # Habitar — sitio web de casas prefabricadas
 
-Sitio de marketing y generación de leads para una empresa mexicana que diseña, fabrica e instala casas prefabricadas contemporáneas. Next.js 16 (App Router, Turbopack), React 19, TypeScript, Tailwind CSS 4 y Framer Motion.
+Sitio de marketing y generación de leads para una empresa mexicana que diseña, fabrica e instala casas prefabricadas contemporáneas. Next.js 16 (App Router, Turbopack), React 19, TypeScript, Tailwind CSS 4 y Framer Motion. Bilingüe: español (por defecto) e inglés.
 
 ## Comandos
 
@@ -15,9 +15,18 @@ node scripts/generate-image-manifest.mjs   # regenera tamaños + blur placeholde
 
 Copia `.env.example` a `.env.local` y ajusta `NEXT_PUBLIC_SITE_URL` y `LEAD_WEBHOOK_URL`.
 
+## Idiomas
+
+- Español es el idioma por defecto y vive en la raíz: `/modelos`, `/cotizador`, `/diseño`…
+- Inglés vive bajo `/en/` con slugs traducidos: `/en/models`, `/en/estimator`, `/en/design`…
+- `src/i18n/routes.ts` es la tabla de rutas (slug por idioma + carpeta interna). `src/proxy.ts` reescribe las URLs públicas a `app/[locale]/…` y redirige las rutas internas a su URL canónica.
+- Textos de interfaz: `src/i18n/dictionaries/es.ts` (define el tipo) y `en.ts` (debe tener la misma forma; TypeScript falla si falta una clave).
+- Contenido de negocio en `src/data/*`: cada campo de texto es `{ es: "…", en: "…" }`. Para añadir un idioma: agrégalo a `locales` en `src/i18n/config.ts`, crea su diccionario, añade su slug en `routes.ts` y completa los campos `L` en los datos.
+- El selector de idioma (`components/layout/LanguageSwitcher.tsx`) enlaza a la misma página en el otro idioma; cada página emite `hreflang` y el sitemap incluye ambos idiomas.
+
 ## Dónde se edita cada cosa
 
-Todo el contenido de negocio vive en `src/data/`. Los componentes no contienen precios, teléfonos ni textos de empresa.
+Todo el contenido de negocio vive en `src/data/`. Los componentes no contienen precios, teléfonos ni textos de empresa. Los textos de interfaz viven en `src/i18n/dictionaries/`.
 
 | Quiero cambiar… | Archivo |
 | --- | --- |
@@ -41,15 +50,18 @@ El precio “desde” de cada modelo se calcula como `m² × precio por m² del 
 
 ```
 src/
-  app/                 rutas (App Router)
-    page.tsx           home
-    modelos/           catálogo con filtros y /modelos/[slug]
-    cotizador/         estimador multi-paso + formulario de cotización formal
-    como-funciona/     proceso en 12 pasos y responsabilidades
-    sustentabilidad/   estrategias con diagramas SVG
-    diseno/            configurador de fachada/interior (URL pública: /diseño)
-    desarrolladores/   página B2B con formulario
-    preguntas-frecuentes/, proyectos/, contacto/, aviso-de-privacidad/
+  proxy.ts             enrutamiento por idioma (rewrites/redirects)
+  i18n/                config, tabla de rutas, diccionarios es/en, provider cliente, helpers de servidor
+  app/
+    [locale]/          todas las páginas (layout raíz con <html lang>)
+      page.tsx         home
+      modelos/         catálogo con filtros y modelos/[slug]
+      cotizador/       estimador multi-paso + formulario de cotización formal
+      como-funciona/   proceso en 12 pasos y responsabilidades
+      sustentabilidad/ estrategias con diagramas SVG
+      diseno/          configurador de fachada/interior (URL pública: /diseño · /en/design)
+      desarrolladores/ página B2B con formulario
+      preguntas-frecuentes/, proyectos/, contacto/, aviso-de-privacidad/, [...rest]/ (404 localizado)
     api/lead/          endpoint que recibe leads y los reenvía a LEAD_WEBHOOK_URL
     sitemap.ts, robots.ts, icon.svg
   components/
@@ -78,4 +90,4 @@ Los formularios (cotizador, contacto, desarrolladores) hacen `POST /api/lead`. S
 
 ## SEO
 
-Metadata por ruta con canonical, OpenGraph y Twitter (`src/lib/seo.ts`), `sitemap.xml`, `robots.txt` y JSON-LD: Organization/HomeAndConstructionBusiness + WebSite (global), ItemList (catálogo), Product + Offer + BreadcrumbList + FAQPage (modelo), FAQPage (preguntas frecuentes).
+Metadata por ruta con canonical, `hreflang` (es-MX, en, x-default), OpenGraph y Twitter (`src/lib/seo.ts`), `sitemap.xml` con ambos idiomas, `robots.txt` y JSON-LD: Organization/HomeAndConstructionBusiness + WebSite (global), ItemList (catálogo), Product + Offer + BreadcrumbList + FAQPage (modelo), FAQPage (preguntas frecuentes).

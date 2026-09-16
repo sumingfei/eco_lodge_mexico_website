@@ -6,9 +6,9 @@ import { cn } from "@/lib/utils";
  * Wordmark + mark.
  * TODO: replace with the company’s final logo (SVG) if different.
  */
-export function Logo({ className, light }: { className?: string; light?: boolean }) {
+export function Logo({ className, light, homeHref = "/" }: { className?: string; light?: boolean; homeHref?: string }) {
   return (
-    <Link href="/" aria-label={`${siteConfig.name} — inicio`} className={cn("inline-flex items-center gap-2.5", className)}>
+    <Link href={homeHref} aria-label={siteConfig.name} className={cn("inline-flex items-center gap-2.5", className)}>
       <LogoMark className={cn("h-7 w-7", light ? "text-limestone" : "text-ink")} />
       <span className={cn("font-serif text-[1.375rem] font-medium tracking-[-0.01em]", light ? "text-limestone" : "text-ink")}>{siteConfig.name}</span>
     </Link>

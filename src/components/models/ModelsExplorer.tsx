@@ -5,6 +5,7 @@ import type { HomeModel } from "@/data/models";
 import { ModelCard } from "./ModelCard";
 import { formatMXNCompact } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { useI18n } from "@/i18n/LocaleProvider";
 
 type Props = { models: (HomeModel & { priceFrom: number })[] };
 
@@ -18,6 +19,8 @@ type Filters = {
 
 /** Client-side filtering of the catalogue by price, area, bedrooms, bathrooms and stories. */
 export function ModelsExplorer({ models }: Props) {
+  const { dict } = useI18n();
+  const m = dict.modelsPage;
   const maxPriceAll = Math.max(...models.map((m) => m.priceFrom));
   const minPriceAll = Math.min(...models.map((m) => m.priceFrom));
   const maxAreaAll = Math.max(...models.map((m) => m.areaM2));
@@ -48,10 +51,10 @@ export function ModelsExplorer({ models }: Props) {
       <div className="min-w-0 lg:col-span-3">
         <div className="lg:sticky lg:top-24">
           <div className="flex items-center justify-between">
-            <h2 className="eyebrow">Filtrar</h2>
+            <h2 className="eyebrow">{m.filter}</h2>
             {isFiltered && (
               <button type="button" onClick={reset} className="text-xs font-semibold text-terracotta hover:underline">
-                Limpiar
+                {m.clear}
               </button>
             )}
           </div>
@@ -59,31 +62,31 @@ export function ModelsExplorer({ models }: Props) {
           <div className="mt-6 space-y-8">
             <Range
               id="precio"
-              label="Presupuesto"
+              label={m.budget}
               value={filters.maxPrice}
               min={minPriceAll}
               max={maxPriceAll}
               step={50000}
-              display={`hasta ${formatMXNCompact(filters.maxPrice)}`}
+              display={`${m.upTo} ${formatMXNCompact(filters.maxPrice)}`}
               onChange={(v) => setFilters((f) => ({ ...f, maxPrice: v }))}
             />
             <Range
               id="area"
-              label="Superficie"
+              label={m.area}
               value={filters.maxArea}
               min={minAreaAll}
               max={maxAreaAll}
               step={5}
-              display={`hasta ${filters.maxArea} m²`}
+              display={`${m.upTo} ${filters.maxArea} m²`}
               onChange={(v) => setFilters((f) => ({ ...f, maxArea: v }))}
             />
-            <Chips label="Recámaras" options={bedroomOptions.map((n) => ({ value: n, label: `${n}+` }))} value={filters.bedrooms} onChange={(v) => setFilters((f) => ({ ...f, bedrooms: v }))} />
-            <Chips label="Baños" options={bathroomOptions.map((n) => ({ value: n, label: `${n}+` }))} value={filters.bathrooms} onChange={(v) => setFilters((f) => ({ ...f, bathrooms: v }))} />
+            <Chips label={m.bedrooms} options={bedroomOptions.map((n) => ({ value: n, label: `${n}+` }))} value={filters.bedrooms} onChange={(v) => setFilters((f) => ({ ...f, bedrooms: v }))} />
+            <Chips label={m.bathrooms} options={bathroomOptions.map((n) => ({ value: n, label: `${n}+` }))} value={filters.bathrooms} onChange={(v) => setFilters((f) => ({ ...f, bathrooms: v }))} />
             <Chips
-              label="Niveles"
+              label={m.stories}
               options={[
-                { value: 1 as const, label: "Un nivel" },
-                { value: 2 as const, label: "Dos niveles" },
+                { value: 1 as const, label: dict.common.oneStory },
+                { value: 2 as const, label: dict.common.twoStory },
               ]}
               value={filters.stories}
               onChange={(v) => setFilters((f) => ({ ...f, stories: v }))}
@@ -94,7 +97,7 @@ export function ModelsExplorer({ models }: Props) {
 
       <div className="min-w-0 lg:col-span-9">
         <p className="text-sm text-stone" aria-live="polite">
-          {results.length} {results.length === 1 ? "modelo" : "modelos"}
+          {results.length} {results.length === 1 ? m.resultOne : m.resultMany}
         </p>
         <div className="mt-6 grid gap-x-6 gap-y-12 sm:grid-cols-2 xl:grid-cols-3">
           {results.map((m, i) => (
@@ -103,10 +106,10 @@ export function ModelsExplorer({ models }: Props) {
         </div>
         {results.length === 0 && (
           <div className="mt-10 rounded-[1.25rem] bg-limestone-50 p-10 text-center">
-            <p className="font-serif text-2xl text-ink">Ningún modelo cumple todos los filtros.</p>
-            <p className="mt-2 text-sm text-stone">Prueba ampliando el presupuesto o la superficie, o cuéntanos qué necesitas en el cotizador.</p>
+            <p className="font-serif text-2xl text-ink">{m.emptyTitle}</p>
+            <p className="mt-2 text-sm text-stone">{m.emptyText}</p>
             <button type="button" onClick={reset} className="mt-6 text-sm font-semibold text-terracotta hover:underline">
-              Limpiar filtros
+              {m.clearFilters}
             </button>
           </div>
         )}

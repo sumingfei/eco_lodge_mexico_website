@@ -8,28 +8,22 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { ArrowRight } from "@/components/ui/Icons";
 import { cn } from "@/lib/utils";
+import { href, t, tl } from "@/i18n";
+import { getI18n } from "@/i18n/server";
 
-export const metadata: Metadata = buildMetadata({
-  title: "Cómo funciona la construcción modular, paso a paso",
-  description:
-    "De la consulta inicial a la entrega en 12 pasos: evaluación del terreno, selección del modelo, ingeniería, permisos, cimentación, fabricación en planta, transporte, montaje y conexiones. Qué hacemos nosotros y qué depende de ti.",
-  path: "/como-funciona",
-  image: "/images/hero/hero-dusk.jpg",
-});
+export async function generateMetadata(): Promise<Metadata> {
+  const { locale, dict } = await getI18n();
+  return buildMetadata({ locale, route: "process", title: dict.processPage.metaTitle, description: dict.processPage.metaDescription, image: "/images/hero/hero-dusk.jpg" });
+}
 
-const ownerLabel = { empresa: "Nosotros", cliente: "Cliente / autoridad", compartido: "Compartido" } as const;
 const ownerTone = { empresa: "terracotta", cliente: "neutral", compartido: "agave" } as const;
 
-export default function HowItWorksPage() {
+export default async function HowItWorksPage() {
+  const { locale, dict } = await getI18n();
+  const pp = dict.processPage;
   return (
     <>
-      <PageHero
-        eyebrow="Cómo funciona"
-        title="Doce pasos. Un solo equipo."
-        intro="Así construimos tu casa: de la primera conversación a la entrega de llaves, con claridad sobre qué hacemos nosotros y qué depende de ti o de tu municipio."
-        image="/images/hero/hero-dusk.jpg"
-        alt="Casa prefabricada con cubierta volada iluminada al anochecer"
-      />
+      <PageHero eyebrow={pp.eyebrow} title={pp.title} intro={pp.intro} image="/images/hero/hero-dusk.jpg" alt={pp.alt} />
 
       <section className="container-wide py-16 sm:py-24">
         <Reveal>
@@ -39,17 +33,17 @@ export default function HowItWorksPage() {
 
       <section className="container-wide pb-20 sm:pb-28" aria-labelledby="proceso">
         <h2 id="proceso" className="display text-3xl text-ink sm:text-5xl">
-          El proceso completo
+          {pp.fullProcess}
         </h2>
         <div className="mt-6 flex flex-wrap gap-3 text-xs text-stone">
           <span className="inline-flex items-center gap-2">
-            <Badge tone="terracotta">Nosotros</Badge> lo ejecuta nuestro equipo
+            <Badge tone="terracotta">{pp.owner.empresa}</Badge> {pp.legendUs}
           </span>
           <span className="inline-flex items-center gap-2">
-            <Badge tone="agave">Compartido</Badge> lo resolvemos juntos
+            <Badge tone="agave">{pp.owner.compartido}</Badge> {pp.legendShared}
           </span>
           <span className="inline-flex items-center gap-2">
-            <Badge>Cliente / autoridad</Badge> depende del cliente o del municipio
+            <Badge>{pp.owner.cliente}</Badge> {pp.legendClient}
           </span>
         </div>
 
@@ -61,13 +55,13 @@ export default function HowItWorksPage() {
                 <div className="lg:col-span-3">
                   <span className="font-serif text-4xl text-stone-300">{step.number}</span>
                   <div className="mt-2 flex flex-wrap items-center gap-2">
-                    <Badge tone={ownerTone[step.owner]}>{ownerLabel[step.owner]}</Badge>
-                    {step.duration && <span className="text-xs text-stone">{step.duration}</span>}
+                    <Badge tone={ownerTone[step.owner]}>{pp.owner[step.owner]}</Badge>
+                    {step.duration && <span className="text-xs text-stone">{t(step.duration, locale)}</span>}
                   </div>
                 </div>
                 <div className="lg:col-span-9">
-                  <h3 className="font-serif text-2xl text-ink sm:text-3xl">{step.title}</h3>
-                  <p className="mt-3 max-w-2xl text-[0.9375rem] leading-relaxed text-charcoal-700/85">{step.text}</p>
+                  <h3 className="font-serif text-2xl text-ink sm:text-3xl">{t(step.title, locale)}</h3>
+                  <p className="mt-3 max-w-2xl text-[0.9375rem] leading-relaxed text-charcoal-700/85">{t(step.text, locale)}</p>
                 </div>
               </div>
             </Reveal>
@@ -78,30 +72,28 @@ export default function HowItWorksPage() {
       <section className="bg-limestone-50 py-20 sm:py-28" aria-labelledby="responsabilidades">
         <div className="container-wide">
           <h2 id="responsabilidades" className="display text-3xl text-ink sm:text-5xl">
-            Quién hace qué
+            {pp.whoTitle}
           </h2>
-          <p className="mt-4 max-w-2xl text-charcoal-700/80">Para que no haya sorpresas: estas son las responsabilidades de cada parte. Los alcances exactos se detallan en tu cotización formal y contrato.</p>
+          <p className="mt-4 max-w-2xl text-charcoal-700/80">{pp.whoText}</p>
           <div className="mt-12 grid gap-6 lg:grid-cols-3">
-            <ResponsibilityCard title="Nuestro equipo" items={responsibilities.empresa} tone="terracotta" />
-            <ResponsibilityCard title="Compartido" items={responsibilities.compartido} tone="agave" />
-            <ResponsibilityCard title="Cliente y autoridades" items={responsibilities.cliente} tone="neutral" />
+            <ResponsibilityCard title={pp.cardUs} items={tl(responsibilities.empresa, locale)} tone="terracotta" />
+            <ResponsibilityCard title={pp.cardShared} items={tl(responsibilities.compartido, locale)} tone="agave" />
+            <ResponsibilityCard title={pp.cardClient} items={tl(responsibilities.cliente, locale)} tone="neutral" />
           </div>
-          <p className="mt-8 text-xs leading-relaxed text-stone">
-            Los tiempos de permisos y trámites municipales varían por localidad y están fuera de nuestro control. Los tiempos de fabricación se cuentan a partir de ingeniería aprobada y anticipo recibido.
-          </p>
+          <p className="mt-8 text-xs leading-relaxed text-stone">{pp.whoNote}</p>
         </div>
       </section>
 
       <section className="container-wide py-20 sm:py-28">
         <div className="rounded-[1.5rem] bg-ink px-6 py-14 text-center text-limestone sm:px-12 sm:py-20">
-          <h2 className="display text-3xl sm:text-5xl">¿Empezamos con el paso 01?</h2>
-          <p className="mx-auto mt-4 max-w-lg text-limestone/75">Una estimación preliminar en minutos, y después una conversación sin compromiso sobre tu terreno.</p>
+          <h2 className="display text-3xl sm:text-5xl">{pp.ctaTitle}</h2>
+          <p className="mx-auto mt-4 max-w-lg text-limestone/75">{pp.ctaText}</p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-            <Button href="/cotizador" variant="light" icon={<ArrowRight size={16} />}>
-              Cotizar mi casa
+            <Button href={href(locale, "estimator")} variant="light" icon={<ArrowRight size={16} />}>
+              {dict.common.quoteMyHome}
             </Button>
-            <Button href="/modelos" variant="outline-light">
-              Explorar modelos
+            <Button href={href(locale, "models")} variant="outline-light">
+              {dict.common.exploreModels}
             </Button>
           </div>
         </div>

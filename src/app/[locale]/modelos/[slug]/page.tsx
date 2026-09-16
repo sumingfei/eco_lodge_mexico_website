@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { models, getModelBySlug } from "@/data/models";
-import { faqs } from "@/data/faqs";
+import { modelPageFaqs } from "@/data/faqs";
 import { getModelStartingPrice } from "@/lib/pricing";
 import { formatArea, formatBathrooms, formatBedrooms, formatMeters, formatMXN, formatWeeks } from "@/lib/format";
-import { buildMetadata, breadcrumbJsonLd, productJsonLd, faqJsonLd } from "@/lib/seo";
+import { buildMetadata, breadcrumbJsonLd, productJsonLd, faqJsonLd, localizeFaqs } from "@/lib/seo";
 import { whatsappModelLink } from "@/lib/whatsapp";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { ModelGallery } from "@/components/models/ModelGallery";
@@ -16,69 +16,84 @@ import { Accordion } from "@/components/ui/Accordion";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { ArrowRight, Check, WhatsApp } from "@/components/ui/Icons";
+import { fill, href, locales, t, tl } from "@/i18n";
+import { getI18n } from "@/i18n/server";
 
 export function generateStaticParams() {
-  return models.map((m) => ({ slug: m.slug }));
+  return locales.flatMap((locale) => models.map((m) => ({ locale, slug: m.slug })));
 }
 
-export async function generateMetadata({ params }: PageProps<"/modelos/[slug]">): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps<"/[locale]/modelos/[slug]">): Promise<Metadata> {
   const { slug } = await params;
+  const { locale, dict } = await getI18n();
   const model = getModelBySlug(slug);
   if (!model) return {};
+  const mp = dict.modelPage;
   return buildMetadata({
-    title: `${model.name} — casa prefabricada de ${model.areaM2} m², ${formatBedrooms(model.bedrooms)}`,
-    description: `${model.tagline} ${formatArea(model.areaM2)}, ${formatBedrooms(model.bedrooms)}, ${formatBathrooms(model.bathrooms)}. Desde ${formatMXN(getModelStartingPrice(model))}. Tiempo estimado ${formatWeeks(model.buildWeeks.min, model.buildWeeks.max)}.`,
-    path: `/modelos/${model.slug}`,
+    locale,
+    route: "models",
+    rest: `/${model.slug}`,
+    title: fill(mp.metaTitle, { name: model.name, area: model.areaM2, bedrooms: formatBedrooms(model.bedrooms, locale) }),
+    description: fill(mp.metaDescription, {
+      tagline: t(model.tagline, locale),
+      area: formatArea(model.areaM2),
+      bedrooms: formatBedrooms(model.bedrooms, locale),
+      bathrooms: formatBathrooms(model.bathrooms, locale),
+      price: formatMXN(getModelStartingPrice(model)),
+      weeks: formatWeeks(model.buildWeeks.min, model.buildWeeks.max, locale),
+    }),
     image: model.images[0].src,
   });
 }
 
-export default async function ModelPage({ params }: PageProps<"/modelos/[slug]">) {
+export default async function ModelPage({ params }: PageProps<"/[locale]/modelos/[slug]">) {
   const { slug } = await params;
+  const { locale, dict } = await getI18n();
   const model = getModelBySlug(slug);
   if (!model) notFound();
 
+  const mp = dict.modelPage;
   const price = getModelStartingPrice(model);
   const related = models.filter((m) => m.slug !== model.slug).sort((a, b) => Math.abs(a.areaM2 - model.areaM2) - Math.abs(b.areaM2 - model.areaM2)).slice(0, 3);
-  const generalFaqs = faqs.filter((f) => ["¿Qué incluye el precio de la casa?", "¿El precio incluye la cimentación?", "¿Cuánto tiempo tarda la construcción?"].includes(f.q));
-  const modelFaqs = [...model.faq, ...generalFaqs];
+  const modelFaqs = localizeFaqs([...model.faq, ...modelPageFaqs], locale);
+  const modelPath = href(locale, "models", `/${model.slug}`);
 
   const specs = [
-    { label: "Superficie interior", value: formatArea(model.areaM2) },
-    { label: "Recámaras", value: String(model.bedrooms) },
-    { label: "Baños", value: formatBathrooms(model.bathrooms).replace(/ baños?$/, "") },
-    { label: "Niveles", value: model.stories === 2 ? "Dos" : "Uno" },
-    { label: "Dimensiones", value: `${formatMeters(model.dimensions.width)} × ${formatMeters(model.dimensions.depth)}` },
-    { label: "Altura", value: formatMeters(model.dimensions.height) },
-    { label: "Tiempo estimado", value: formatWeeks(model.buildWeeks.min, model.buildWeeks.max) },
+    { label: mp.interiorSurface, value: formatArea(model.areaM2) },
+    { label: mp.bedrooms, value: String(model.bedrooms) },
+    { label: mp.bathrooms, value: String(model.bathrooms) },
+    { label: mp.stories, value: model.stories === 2 ? mp.two : mp.one },
+    { label: mp.dimensions, value: `${formatMeters(model.dimensions.width)} × ${formatMeters(model.dimensions.depth)}` },
+    { label: mp.height, value: formatMeters(model.dimensions.height) },
+    { label: mp.estimatedTime, value: formatWeeks(model.buildWeeks.min, model.buildWeeks.max, locale) },
   ];
 
   return (
     <>
       <JsonLd
         data={[
-          productJsonLd(model),
+          productJsonLd(model, locale),
           breadcrumbJsonLd([
-            { name: "Inicio", path: "/" },
-            { name: "Modelos", path: "/modelos" },
-            { name: model.name, path: `/modelos/${model.slug}` },
+            { name: dict.common.home, path: href(locale, "home") },
+            { name: dict.nav.models, path: href(locale, "models") },
+            { name: model.name, path: modelPath },
           ]),
           faqJsonLd(modelFaqs),
         ]}
       />
 
       <article className="container-wide pb-28 pt-28 sm:pt-36 lg:pb-32">
-        <nav aria-label="Migas de pan" className="text-xs text-stone">
+        <nav aria-label={dict.common.breadcrumbs} className="text-xs text-stone">
           <ol className="flex items-center gap-2">
             <li>
-              <Link href="/" className="hover:text-ink">
-                Inicio
+              <Link href={href(locale, "home")} className="hover:text-ink">
+                {dict.common.home}
               </Link>
             </li>
             <li aria-hidden>/</li>
             <li>
-              <Link href="/modelos" className="hover:text-ink">
-                Modelos
+              <Link href={href(locale, "models")} className="hover:text-ink">
+                {dict.nav.models}
               </Link>
             </li>
             <li aria-hidden>/</li>
@@ -92,22 +107,22 @@ export default async function ModelPage({ params }: PageProps<"/modelos/[slug]">
           <div className="lg:col-span-8">
             <div className="flex flex-wrap items-center gap-2">
               <Badge tone="terracotta">{model.family}</Badge>
-              <Badge>{model.stories === 2 ? "Dos niveles" : "Un nivel"}</Badge>
+              <Badge>{model.stories === 2 ? dict.common.twoStory : dict.common.oneStory}</Badge>
             </div>
             <h1 className="display mt-5 text-[3rem] text-ink sm:text-[4.5rem] lg:text-[5.5rem]">{model.name}</h1>
-            <p className="mt-4 max-w-xl font-serif text-2xl leading-snug text-charcoal-700/85 sm:text-3xl">{model.tagline}</p>
+            <p className="mt-4 max-w-xl font-serif text-2xl leading-snug text-charcoal-700/85 sm:text-3xl">{t(model.tagline, locale)}</p>
           </div>
           <dl className="grid grid-cols-3 gap-4 border-t border-ink/10 pt-5 lg:col-span-4 lg:border-t-0 lg:pt-0">
             <div>
-              <dt className="eyebrow">Superficie</dt>
+              <dt className="eyebrow">{mp.surface}</dt>
               <dd className="mt-1 font-serif text-2xl text-ink">{formatArea(model.areaM2)}</dd>
             </div>
             <div>
-              <dt className="eyebrow">Recámaras</dt>
+              <dt className="eyebrow">{mp.bedrooms}</dt>
               <dd className="mt-1 font-serif text-2xl text-ink">{model.bedrooms}</dd>
             </div>
             <div>
-              <dt className="eyebrow">Baños</dt>
+              <dt className="eyebrow">{mp.bathrooms}</dt>
               <dd className="mt-1 font-serif text-2xl text-ink">{model.bathrooms}</dd>
             </div>
           </dl>
@@ -119,11 +134,11 @@ export default async function ModelPage({ params }: PageProps<"/modelos/[slug]">
 
             <section aria-labelledby="descripcion">
               <h2 id="descripcion" className="eyebrow">
-                El modelo
+                {mp.theModel}
               </h2>
-              <p className="mt-5 max-w-2xl text-lg leading-relaxed text-charcoal-700/85">{model.description}</p>
+              <p className="mt-5 max-w-2xl text-lg leading-relaxed text-charcoal-700/85">{t(model.description, locale)}</p>
               <ul className="mt-6 flex flex-wrap gap-2">
-                {model.idealFor.map((tag) => (
+                {tl(model.idealFor, locale).map((tag) => (
                   <li key={tag} className="rounded-full border border-ink/15 px-3 py-1 text-xs font-medium text-ink/80">
                     {tag}
                   </li>
@@ -133,7 +148,7 @@ export default async function ModelPage({ params }: PageProps<"/modelos/[slug]">
 
             <section aria-labelledby="especificaciones">
               <h2 id="especificaciones" className="eyebrow">
-                Especificaciones
+                {mp.specs}
               </h2>
               <dl className="mt-5 grid grid-cols-2 gap-x-6 gap-y-5 border-t border-ink/10 pt-6 sm:grid-cols-3">
                 {specs.map((s) => (
@@ -147,11 +162,11 @@ export default async function ModelPage({ params }: PageProps<"/modelos/[slug]">
 
             <section aria-labelledby="planta">
               <h2 id="planta" className="eyebrow">
-                Planta arquitectónica
+                {mp.floorPlan}
               </h2>
               <div className="mt-5 grid gap-6">
                 {model.floorPlan.map((floor) => (
-                  <FloorPlan key={floor.name} floor={floor} />
+                  <FloorPlan key={floor.name.es} floor={floor} locale={locale} labels={dict.floorPlan} />
                 ))}
               </div>
             </section>
@@ -159,39 +174,39 @@ export default async function ModelPage({ params }: PageProps<"/modelos/[slug]">
             <section aria-labelledby="caracteristicas" className="grid gap-10 sm:grid-cols-2">
               <div>
                 <h2 id="caracteristicas" className="eyebrow">
-                  Características
+                  {mp.features}
                 </h2>
-                <List items={model.features} />
+                <List items={tl(model.features, locale)} />
               </div>
               <div>
-                <h2 className="eyebrow">Acabados incluidos</h2>
-                <List items={model.includedFinishes} />
+                <h2 className="eyebrow">{mp.included}</h2>
+                <List items={tl(model.includedFinishes, locale)} />
               </div>
             </section>
 
             <section aria-labelledby="mejoras" className="grid gap-10 sm:grid-cols-2">
               <div>
                 <h2 id="mejoras" className="eyebrow">
-                  Mejoras disponibles
+                  {mp.upgrades}
                 </h2>
                 <ul className="mt-5 flex flex-wrap gap-2">
-                  {model.upgrades.map((u) => (
+                  {tl(model.upgrades, locale).map((u) => (
                     <li key={u} className="rounded-full bg-ink/5 px-3 py-1.5 text-sm text-ink">
                       {u}
                     </li>
                   ))}
                 </ul>
-                <p className="mt-4 text-xs text-stone">Los precios de las mejoras se cotizan por proyecto. Consulta el cotizador para una referencia.</p>
+                <p className="mt-4 text-xs text-stone">{mp.upgradesNote}</p>
               </div>
               <div>
-                <h2 className="eyebrow">Sustentabilidad</h2>
-                <List items={model.sustainability} tone="agave" />
+                <h2 className="eyebrow">{mp.sustainability}</h2>
+                <List items={tl(model.sustainability, locale)} tone="agave" />
               </div>
             </section>
 
             <section aria-labelledby="faq">
               <h2 id="faq" className="eyebrow">
-                Preguntas sobre {model.name}
+                {fill(mp.faq, { name: model.name })}
               </h2>
               <Accordion items={modelFaqs} className="mt-5" />
             </section>
@@ -200,20 +215,20 @@ export default async function ModelPage({ params }: PageProps<"/modelos/[slug]">
           {/* Desktop sticky summary */}
           <div className="hidden lg:col-span-4 lg:block">
             <div className="sticky top-24 rounded-[1.25rem] border border-ink/10 bg-limestone-50 p-7">
-              <p className="eyebrow">Desde</p>
+              <p className="eyebrow">{dict.common.from}</p>
               <p className="mt-2 font-serif text-4xl text-ink">{formatMXN(price)}</p>
-              <p className="mt-2 text-xs leading-relaxed text-stone">Nivel de acabado Esencial. No incluye terreno, cimentación, permisos ni conexiones a servicios.</p>
+              <p className="mt-2 text-xs leading-relaxed text-stone">{mp.priceNote}</p>
               <dl className="mt-6 space-y-2 border-t border-ink/10 pt-5 text-sm">
-                <Row label="Superficie" value={formatArea(model.areaM2)} />
-                <Row label="Programa" value={`${formatBedrooms(model.bedrooms)} · ${formatBathrooms(model.bathrooms)}`} />
-                <Row label="Tiempo estimado" value={formatWeeks(model.buildWeeks.min, model.buildWeeks.max)} />
+                <Row label={mp.surface} value={formatArea(model.areaM2)} />
+                <Row label={mp.program} value={`${formatBedrooms(model.bedrooms, locale)} · ${formatBathrooms(model.bathrooms, locale)}`} />
+                <Row label={mp.estimatedTime} value={formatWeeks(model.buildWeeks.min, model.buildWeeks.max, locale)} />
               </dl>
               <div className="mt-7 grid gap-3">
-                <Button href={`/cotizador?modelo=${model.slug}`} size="lg" icon={<ArrowRight size={16} />}>
-                  Cotizar este modelo
+                <Button href={href(locale, "estimator", `?modelo=${model.slug}`)} size="lg" icon={<ArrowRight size={16} />}>
+                  {dict.common.quoteThisModel}
                 </Button>
-                <Button href={whatsappModelLink(model.name)} external variant="outline" size="lg" icon={<WhatsApp size={16} />}>
-                  Preguntar por WhatsApp
+                <Button href={whatsappModelLink(model.name, locale)} external variant="outline" size="lg" icon={<WhatsApp size={16} />}>
+                  {dict.common.askWhatsapp}
                 </Button>
               </div>
             </div>
@@ -223,10 +238,10 @@ export default async function ModelPage({ params }: PageProps<"/modelos/[slug]">
         <section className="mt-24 border-t border-ink/10 pt-16" aria-labelledby="relacionados">
           <div className="flex items-end justify-between gap-6">
             <h2 id="relacionados" className="display text-3xl text-ink sm:text-4xl">
-              Otros modelos
+              {mp.otherModels}
             </h2>
-            <Link href="/modelos" className="text-sm font-semibold text-ink hover:text-terracotta">
-              Ver todos
+            <Link href={href(locale, "models")} className="text-sm font-semibold text-ink hover:text-terracotta">
+              {dict.common.seeAll}
             </Link>
           </div>
           <div className="mt-10 grid gap-x-6 gap-y-12 sm:grid-cols-2 xl:grid-cols-3">

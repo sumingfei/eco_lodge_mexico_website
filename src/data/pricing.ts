@@ -6,6 +6,8 @@
  * The estimator (lib/estimator.ts) and model cards read exclusively from this file.
  */
 
+import type { L } from "@/i18n/config";
+
 export type FinishLevel = "esencial" | "confort" | "premium";
 
 export const pricing = {
@@ -35,13 +37,13 @@ export const pricing = {
 
   /** Optional systems & equipment. `perUnit` items multiply by `units` (e.g. per recámara). */
   options: {
-    solar: { label: "Paneles solares", price: 98000, weeks: 1 },
-    rainwater: { label: "Captación de agua de lluvia", price: 46000, weeks: 0.5 },
-    greywater: { label: "Reúso de aguas grises", price: 39000, weeks: 0.5 },
-    deck: { label: "Deck exterior", price: 68000, weeks: 1 },
-    pergola: { label: "Pérgola", price: 52000, weeks: 0.5 },
-    smartHome: { label: "Casa inteligente", price: 42000, weeks: 0.5 },
-    ac: { label: "Aire acondicionado", price: 24000, perUnit: "bedroom" as const, weeks: 0.5 },
+    solar: { label: { es: "Paneles solares", en: "Solar panels" }, price: 98000, weeks: 1 },
+    rainwater: { label: { es: "Captación de agua de lluvia", en: "Rainwater harvesting" }, price: 46000, weeks: 0.5 },
+    greywater: { label: { es: "Reúso de aguas grises", en: "Greywater reuse" }, price: 39000, weeks: 0.5 },
+    deck: { label: { es: "Deck exterior", en: "Outdoor deck" }, price: 68000, weeks: 1 },
+    pergola: { label: { es: "Pérgola", en: "Pergola" }, price: 52000, weeks: 0.5 },
+    smartHome: { label: { es: "Casa inteligente", en: "Smart home" }, price: 42000, weeks: 0.5 },
+    ac: { label: { es: "Aire acondicionado", en: "Air conditioning" }, price: 24000, perUnit: "bedroom" as const, weeks: 0.5 },
   },
 
   /** Rough construction timeline model (weeks). */
@@ -59,11 +61,11 @@ export const pricing = {
 
   /** Size ranges offered in the estimator with the m² used for calculation. */
   sizeRanges: [
-    { id: "40-60", label: "40 – 60 m²", m2: 50 },
-    { id: "60-90", label: "60 – 90 m²", m2: 75 },
-    { id: "90-120", label: "90 – 120 m²", m2: 105 },
-    { id: "120-160", label: "120 – 160 m²", m2: 140 },
-    { id: "160+", label: "160 m² o más", m2: 190 },
+    { id: "40-60", label: { es: "40 – 60 m²", en: "40 – 60 m²" }, m2: 50, hint: { es: "NIDO 45 · un refugio o una unidad de renta", en: "NIDO 45 · a retreat or a rental unit" } },
+    { id: "60-90", label: { es: "60 – 90 m²", en: "60 – 90 m²" }, m2: 75, hint: { es: "NIDO 65 · CASA 85 · pareja o familia pequeña", en: "NIDO 65 · CASA 85 · couple or small family" } },
+    { id: "90-120", label: { es: "90 – 120 m²", en: "90 – 120 m²" }, m2: 105, hint: { es: "CASA 110 · familia con hijos", en: "CASA 110 · family with children" } },
+    { id: "120-160", label: { es: "120 – 160 m²", en: "120 – 160 m²" }, m2: 140, hint: { es: "PATIO 140 · casa con patio central", en: "PATIO 140 · courtyard house" } },
+    { id: "160+", label: { es: "160 m² o más", en: "160 m² or more" }, m2: 190, hint: { es: "PATIO 180 · dos niveles, cuatro recámaras", en: "PATIO 180 · two stories, four bedrooms" } },
   ],
 
   /** Minimum m² assumed per bedroom (plus shared areas) so bedroom count and size stay coherent. */
@@ -82,23 +84,47 @@ export const pricing = {
   },
 } as const;
 
-export const finishLevels: { id: FinishLevel; name: string; description: string; highlights: string[] }[] = [
+export const finishLevels: { id: FinishLevel; name: L; description: L; highlights: L[] }[] = [
   {
     id: "esencial",
-    name: "Esencial",
-    description: "Lo necesario, bien resuelto. Acabados durables y sobrios con la misma envolvente de alto desempeño.",
-    highlights: ["Piso de concreto pulido o porcelanato básico", "Cocina con cubierta de cuarzo estándar", "Carpintería de MDF laminado", "Cancelería de aluminio con doble vidrio"],
+    name: { es: "Esencial", en: "Essential" },
+    description: {
+      es: "Lo necesario, bien resuelto. Acabados durables y sobrios con la misma envolvente de alto desempeño.",
+      en: "The essentials, well resolved. Durable, understated finishes with the same high-performance envelope.",
+    },
+    highlights: [
+      { es: "Piso de concreto pulido o porcelanato básico", en: "Polished concrete or basic porcelain tile floors" },
+      { es: "Cocina con cubierta de cuarzo estándar", en: "Kitchen with standard quartz countertop" },
+      { es: "Carpintería de MDF laminado", en: "Laminated MDF joinery" },
+      { es: "Cancelería de aluminio con doble vidrio", en: "Aluminum windows with double glazing" },
+    ],
   },
   {
     id: "confort",
-    name: "Confort",
-    description: "El equilibrio que más eligen nuestros clientes: mejores texturas, más luz y detalles en madera.",
-    highlights: ["Porcelanato gran formato o madera de ingeniería", "Cocina con cubierta de cuarzo y despensa", "Carpintería de madera chapada", "Cancelería de aluminio negro con doble vidrio bajo emisivo"],
+    name: { es: "Confort", en: "Comfort" },
+    description: {
+      es: "El equilibrio que más eligen nuestros clientes: mejores texturas, más luz y detalles en madera.",
+      en: "The balance most clients choose: richer textures, more light and timber details.",
+    },
+    highlights: [
+      { es: "Porcelanato gran formato o madera de ingeniería", en: "Large-format porcelain or engineered wood" },
+      { es: "Cocina con cubierta de cuarzo y despensa", en: "Kitchen with quartz countertop and pantry" },
+      { es: "Carpintería de madera chapada", en: "Wood-veneer joinery" },
+      { es: "Cancelería de aluminio negro con doble vidrio bajo emisivo", en: "Black aluminum windows with low-e double glazing" },
+    ],
   },
   {
     id: "premium",
-    name: "Premium",
-    description: "Materiales de especificación arquitectónica: piedra natural, maderas sólidas y grifería de diseño.",
-    highlights: ["Piedra natural o madera sólida", "Cocina de diseño con isla y electrodomésticos integrados", "Carpintería de madera sólida a medida", "Cancelería de gran formato y vidrio de control solar"],
+    name: { es: "Premium", en: "Premium" },
+    description: {
+      es: "Materiales de especificación arquitectónica: piedra natural, maderas sólidas y grifería de diseño.",
+      en: "Architect-spec materials: natural stone, solid timber and designer fixtures.",
+    },
+    highlights: [
+      { es: "Piedra natural o madera sólida", en: "Natural stone or solid wood" },
+      { es: "Cocina de diseño con isla y electrodomésticos integrados", en: "Designer kitchen with island and integrated appliances" },
+      { es: "Carpintería de madera sólida a medida", en: "Custom solid-wood joinery" },
+      { es: "Cancelería de gran formato y vidrio de control solar", en: "Large-format glazing with solar-control glass" },
+    ],
   },
 ];

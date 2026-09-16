@@ -6,13 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { WhatsApp } from "@/components/ui/Icons";
 import { whatsappLink } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
-
-export const timeframes = ["Lo antes posible", "En 3 – 6 meses", "En 6 – 12 meses", "Más de un año / explorando"];
-export const landOptions = [
-  { value: "si", label: "Sí, ya tengo terreno" },
-  { value: "buscando", label: "Estoy buscando terreno" },
-  { value: "no", label: "Aún no tengo terreno" },
-];
+import { useI18n } from "@/i18n/LocaleProvider";
 
 type Props = {
   source: "cotizador" | "contacto" | "desarrolladores";
@@ -29,7 +23,9 @@ type Props = {
   titleAs?: "h2" | "h3";
 };
 
-export function LeadForm({ source, title, intro, submitLabel = "Solicitar cotización formal", defaults, extra, whatsappMessage, showMessage, compact, titleAs: Title = "h3" }: Props) {
+export function LeadForm({ source, title, intro, submitLabel, defaults, extra, whatsappMessage, showMessage, compact, titleAs: Title = "h3" }: Props) {
+  const { locale, dict, p } = useI18n();
+  const f = dict.leadForm;
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -40,6 +36,7 @@ export function LeadForm({ source, title, intro, submitLabel = "Solicitar cotiza
     const form = new FormData(e.currentTarget);
     const payload = {
       source,
+      locale,
       name: String(form.get("name") ?? ""),
       email: String(form.get("email") ?? ""),
       phone: String(form.get("phone") ?? ""),
@@ -53,22 +50,22 @@ export function LeadForm({ source, title, intro, submitLabel = "Solicitar cotiza
     try {
       const res = await fetch("/api/lead", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       const data = (await res.json()) as { ok: boolean; error?: string };
-      if (!res.ok || !data.ok) throw new Error(data.error ?? "Error");
+      if (!res.ok || !data.ok) throw new Error(data.error ?? f.errorGeneric);
       setStatus("sent");
     } catch (err) {
       setStatus("error");
-      setError(err instanceof Error ? err.message : "No pudimos enviar tu solicitud.");
+      setError(err instanceof Error ? err.message : f.errorGeneric);
     }
   }
 
   if (status === "sent") {
     return (
       <div className="rounded-[1.25rem] bg-agave-100 p-8 text-agave-700">
-        <p className="font-serif text-2xl">Recibimos tu solicitud.</p>
-        <p className="mt-3 text-sm leading-relaxed">Un integrante del equipo te contactará por WhatsApp o correo para revisar tu terreno y preparar una cotización formal.</p>
+        <p className="font-serif text-2xl">{f.successTitle}</p>
+        <p className="mt-3 text-sm leading-relaxed">{f.successText}</p>
         {whatsappMessage && (
           <Button href={whatsappLink(whatsappMessage)} external variant="primary" className="mt-6" icon={<WhatsApp size={16} />}>
-            Continuar por WhatsApp
+            {dict.common.continueWhatsapp}
           </Button>
         )}
       </div>
@@ -86,28 +83,28 @@ export function LeadForm({ source, title, intro, submitLabel = "Solicitar cotiza
       <div className={cn("grid gap-5", (title || intro) && "mt-6", !compact && "sm:grid-cols-2")}>
         <div>
           <label htmlFor={`${source}-name`} className={label}>
-            Nombre
+            {f.name}
           </label>
-          <input id={`${source}-name`} name="name" type="text" autoComplete="name" required minLength={2} className={field} placeholder="Tu nombre" />
+          <input id={`${source}-name`} name="name" type="text" autoComplete="name" required minLength={2} className={field} placeholder={f.namePlaceholder} />
         </div>
         <div>
           <label htmlFor={`${source}-email`} className={label}>
-            Correo electrónico
+            {f.email}
           </label>
-          <input id={`${source}-email`} name="email" type="email" autoComplete="email" required className={field} placeholder="tu@correo.com" />
+          <input id={`${source}-email`} name="email" type="email" autoComplete="email" required className={field} placeholder={f.emailPlaceholder} />
         </div>
         <div>
           <label htmlFor={`${source}-phone`} className={label}>
-            Teléfono / WhatsApp
+            {f.phone}
           </label>
-          <input id={`${source}-phone`} name="phone" type="tel" inputMode="tel" autoComplete="tel" required className={field} placeholder="55 1234 5678" />
+          <input id={`${source}-phone`} name="phone" type="tel" inputMode="tel" autoComplete="tel" required className={field} placeholder={f.phonePlaceholder} />
         </div>
         <div>
           <label htmlFor={`${source}-state`} className={label}>
-            Estado donde construirías
+            {f.state}
           </label>
           <select id={`${source}-state`} name="state" defaultValue={defaults?.stateCode ? mexicanStates.find((s) => s.code === defaults.stateCode)?.name : ""} className={field}>
-            <option value="">Selecciona un estado</option>
+            <option value="">{f.selectState}</option>
             {mexicanStates.map((s) => (
               <option key={s.code} value={s.name}>
                 {s.name}
@@ -117,30 +114,30 @@ export function LeadForm({ source, title, intro, submitLabel = "Solicitar cotiza
         </div>
         <div>
           <label htmlFor={`${source}-city`} className={label}>
-            Municipio / ciudad
+            {f.city}
           </label>
-          <input id={`${source}-city`} name="city" type="text" autoComplete="address-level2" defaultValue={defaults?.location ?? ""} className={field} placeholder="Ej. Tequisquiapan" />
+          <input id={`${source}-city`} name="city" type="text" autoComplete="address-level2" defaultValue={defaults?.location ?? ""} className={field} placeholder={f.cityPlaceholder} />
         </div>
         <div>
           <label htmlFor={`${source}-hasLand`} className={label}>
-            ¿Ya tienes terreno?
+            {f.hasLand}
           </label>
           <select id={`${source}-hasLand`} name="hasLand" defaultValue={defaults?.hasLand ?? "si"} className={field}>
-            {landOptions.map((o) => (
-              <option key={o.value} value={o.value}>
-                {o.label}
+            {(Object.keys(f.landOptions) as (keyof typeof f.landOptions)[]).map((value) => (
+              <option key={value} value={value}>
+                {f.landOptions[value]}
               </option>
             ))}
           </select>
         </div>
         <div className={cn(!compact && "sm:col-span-2")}>
           <label htmlFor={`${source}-timeframe`} className={label}>
-            ¿Cuándo te gustaría construir?
+            {f.timeframe}
           </label>
-          <select id={`${source}-timeframe`} name="timeframe" defaultValue={timeframes[1]} className={field}>
-            {timeframes.map((t) => (
-              <option key={t} value={t}>
-                {t}
+          <select id={`${source}-timeframe`} name="timeframe" defaultValue={f.timeframes[1]} className={field}>
+            {f.timeframes.map((tf) => (
+              <option key={tf} value={tf}>
+                {tf}
               </option>
             ))}
           </select>
@@ -148,14 +145,14 @@ export function LeadForm({ source, title, intro, submitLabel = "Solicitar cotiza
         {showMessage && (
           <div className={cn(!compact && "sm:col-span-2")}>
             <label htmlFor={`${source}-message`} className={label}>
-              Cuéntanos sobre tu proyecto
+              {f.message}
             </label>
-            <textarea id={`${source}-message`} name="message" rows={4} className={cn(field, "h-auto py-3")} placeholder="Terreno, número de unidades, uso, calendario…" />
+            <textarea id={`${source}-message`} name="message" rows={4} className={cn(field, "h-auto py-3")} placeholder={f.messagePlaceholder} />
           </div>
         )}
         {/* Honeypot */}
         <div className="hidden" aria-hidden>
-          <label htmlFor={`${source}-website`}>Sitio web</label>
+          <label htmlFor={`${source}-website`}>{f.website}</label>
           <input id={`${source}-website`} name="website" type="text" tabIndex={-1} autoComplete="off" />
         </div>
       </div>
@@ -168,14 +165,14 @@ export function LeadForm({ source, title, intro, submitLabel = "Solicitar cotiza
 
       <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
         <Button type="submit" size="lg" disabled={status === "sending"} className="disabled:opacity-60">
-          {status === "sending" ? "Enviando…" : submitLabel}
+          {status === "sending" ? f.sending : (submitLabel ?? f.submitDefault)}
         </Button>
         <p className="text-xs leading-relaxed text-stone">
-          Al enviar aceptas nuestro{" "}
-          <a href="/aviso-de-privacidad" className="underline hover:text-ink">
-            aviso de privacidad
+          {f.consent}{" "}
+          <a href={p("privacy")} className="underline hover:text-ink">
+            {f.privacy}
           </a>
-          . Sin compromiso.
+          . {f.noCommitment}
         </p>
       </div>
     </form>

@@ -61,7 +61,7 @@ export const pricing = {
 
   /** Size ranges offered in the estimator with the m² used for calculation. */
   sizeRanges: [
-    { id: "40-60", label: { es: "40 – 60 m²", en: "40 – 60 m²" }, m2: 50, hint: { es: "NIDO 45 · un refugio o una unidad de renta", en: "NIDO 45 · a retreat or a rental unit" } },
+    { id: "40-60", label: { es: "40 – 60 m²", en: "40 – 60 m²" }, m2: 50, hint: { es: "CASA 37 · NIDO 45 · un refugio o una unidad de renta", en: "CASA 37 · NIDO 45 · a retreat or a rental unit" } },
     { id: "60-90", label: { es: "60 – 90 m²", en: "60 – 90 m²" }, m2: 75, hint: { es: "NIDO 65 · CASA 85 · pareja o familia pequeña", en: "NIDO 65 · CASA 85 · couple or small family" } },
     { id: "90-120", label: { es: "90 – 120 m²", en: "90 – 120 m²" }, m2: 105, hint: { es: "CASA 110 · familia con hijos", en: "CASA 110 · family with children" } },
     { id: "120-160", label: { es: "120 – 160 m²", en: "120 – 160 m²" }, m2: 140, hint: { es: "PATIO 140 · casa con patio central", en: "PATIO 140 · courtyard house" } },

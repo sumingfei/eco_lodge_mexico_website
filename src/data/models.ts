@@ -82,6 +82,7 @@ const R = {
   hall: { es: "Pasillo", en: "Hallway" },
   stairs: { es: "Escalera", en: "Stairs" },
   study: { es: "Estudio · Recámara 4", en: "Study · Bedroom 4" },
+  porch: { es: "Pórtico", en: "Porch" },
   singleFloor: { es: "Planta única", en: "Single floor" },
   groundFloor: { es: "Planta baja", en: "Ground floor" },
   upperFloor: { es: "Planta alta", en: "Upper floor" },
@@ -125,9 +126,100 @@ const U = {
   pool: { es: "Alberca", en: "Pool" },
   poolCompact: { es: "Alberca compacta", en: "Compact pool" },
   lift: { es: "Elevador residencial", en: "Residential lift" },
+  pitchedRoof: { es: "Cubierta inclinada", en: "Pitched roof" },
+  porchDeck: { es: "Pórtico con deck", en: "Porch with deck" },
+  cladding: { es: "Recubrimiento exterior de madera", en: "Exterior timber cladding" },
+  oneBedLayout: { es: "Distribución de una recámara", en: "One-bedroom layout" },
 } satisfies Record<string, L>;
 
 export const models: HomeModel[] = [
+  {
+    // Expandable 20 ft unit. Spec source: supplier product sheet (ShengStart).
+    // TODO: confirm delivery timeframe and pricing for this unit.
+    slug: "casa-37",
+    name: "CASA 37",
+    family: "Casa",
+    tagline: { es: "Una casa expandible que llega lista y se despliega en tu terreno.", en: "An expandable home that arrives ready and unfolds on your land." },
+    description: {
+      es: "CASA 37 es nuestra unidad expandible: viaja plegada como un módulo de 20 pies y en sitio se despliega a 37 m² con dos recámaras, baño completo, cocina y estancia. Llega con instalaciones precableadas, cancelería de aluminio con doble vidrio, cocina y baño terminados. Con cubierta inclinada y pórtico opcionales, es la opción más rápida para una casa de descanso, una unidad de renta o una casa de huéspedes.",
+      en: "CASA 37 is our expandable unit: it travels folded as a 20 ft module and unfolds on site to 37 m² with two bedrooms, a full bathroom, kitchen and living area. It arrives with pre-wired installations, double-glazed aluminum windows, and a finished kitchen and bathroom. With an optional pitched roof and porch, it's the fastest option for a weekend home, a rental unit or a guest house.",
+    },
+    idealFor: [
+      { es: "Casa de descanso", en: "Weekend home" },
+      { es: "Airbnb / renta", en: "Airbnb / rental" },
+      { es: "Casa de huéspedes", en: "Guest house" },
+      { es: "Desarrollos por lotes", en: "Multi-unit developments" },
+    ],
+    areaM2: 37,
+    bedrooms: 2,
+    bathrooms: 1,
+    stories: 1,
+    dimensions: { width: 6.32, depth: 5.9, height: 2.48 },
+    buildWeeks: { min: 6, max: 10 },
+    images: [
+      { src: "/images/models/casa-37-01.jpg", alt: { es: "CASA 37 desplegada con cubierta inclinada y pórtico frente a montañas", en: "CASA 37 unfolded with pitched roof and porch in front of mountains" } },
+      { src: "/images/models/casa-37-02.jpg", alt: { es: "Pórtico con deck, escalera y barandal de acero de CASA 37", en: "CASA 37 porch with deck, steps and steel railing" } },
+      { src: "/images/models/casa-37-03.jpg", alt: { es: "Baño con regadera de puerta corrediza, lavabo y muros tipo mármol", en: "Bathroom with sliding-door shower, basin and marble-look walls" } },
+      { src: "/images/models/casa-37-04.jpg", alt: { es: "Cocina en L con gabinetes blancos, tarja doble y ventana", en: "L-shaped kitchen with white cabinets, double sink and window" } },
+    ],
+    floorPlan: [
+      {
+        name: R.singleFloor,
+        width: 6.32,
+        depth: 5.9,
+        rooms: [
+          { name: R.livingDining, x: 2.06, y: 0, w: 2.2, h: 5.9 },
+          { name: R.bedroom1, x: 0, y: 0, w: 2.06, h: 3.5 },
+          { name: R.bath, x: 0, y: 3.5, w: 2.06, h: 2.4 },
+          { name: R.bedroom2, x: 4.26, y: 0, w: 2.06, h: 3.5 },
+          { name: R.kitchen, x: 4.26, y: 3.5, w: 2.06, h: 2.4 },
+          { name: R.porch, x: 2.06, y: 5.9, w: 2.2, h: 1.8, open: true },
+        ],
+      },
+    ],
+    features: [
+      { es: "Módulo expandible: viaja plegado (5.9 × 2.2 × 2.48 m, ≈ 3,000 kg) y se despliega en sitio", en: "Expandable module: travels folded (5.9 × 2.2 × 2.48 m, ≈ 3,000 kg) and unfolds on site" },
+      { es: "Dos distribuciones: una o dos recámaras", en: "Two layouts: one or two bedrooms" },
+      { es: "Altura interior de 2.24 m", en: "2.24 m interior ceiling height" },
+      { es: "Muros de panel sándwich EPS/PU de 75 mm y cubierta con 50 mm de aislamiento", en: "75 mm EPS/PU sandwich-panel walls and roof with 50 mm insulation" },
+      { es: "Puertas y ventanas de aluminio con rotura de puente térmico, doble vidrio y mosquitero", en: "Thermally broken aluminum doors and windows with double glazing and fly screens" },
+      { es: "Dos unidades caben en un contenedor de 40 pies HQ para transporte", en: "Two units fit in one 40 ft HQ container for transport" },
+    ],
+    includedFinishes: [
+      { es: "Estructura de acero galvanizado con recubrimiento en polvo anticorrosivo", en: "Galvanized steel frame with anti-corrosion powder coating" },
+      { es: "Subpiso de panel compuesto de magnesio, resistente a agua, pudrición e insectos", en: "Magnesium composite subfloor, water, rot and insect resistant" },
+      { es: "Piso vinílico con patrón de madera", en: "Timber-pattern vinyl flooring" },
+      { es: "Cocina con gabinetes de cierre suave, cubierta de piedra de ingeniería y tarja de acero inoxidable", en: "Kitchen with soft-close cabinets, engineered stone countertop and stainless sink" },
+      { es: "Baño con regadera de lluvia de ancho completo, WC, lavabo de porcelana y muros con acabado tipo mármol", en: "Bathroom with full-width rain shower, toilet, porcelain basin and marble-look walls" },
+      { es: "Instalación eléctrica precableada e iluminación LED", en: "Pre-wired electrical installation and LED lighting" },
+      { es: "Conexiones de agua y drenaje en la fachada posterior", en: "Water and drainage connections on the rear wall" },
+      { es: "Puerta de baño de vidrio esmerilado", en: "Frosted glass bathroom door" },
+    ],
+    upgrades: [U.pitchedRoof, U.porchDeck, U.cladding, U.oneBedLayout, U.solar, U.rain, U.ac, U.smart],
+    sustainability: [
+      { es: "Envolvente aislada en muros, piso y cubierta", en: "Insulated envelope in walls, floor and roof" },
+      { es: "Doble vidrio en toda la cancelería", en: "Double glazing throughout" },
+      { es: "Iluminación LED incluida", en: "LED lighting included" },
+      { es: "Fabricación completa en planta: obra en sitio mínima", en: "Fully factory-built: minimal site work" },
+      { es: "Transporte plegado: dos casas por contenedor", en: "Ships folded: two homes per container" },
+      { es: "Preparación para paneles solares y captación pluvial", en: "Ready for solar panels and rainwater harvesting" },
+    ],
+    faq: [
+      {
+        q: { es: "¿Cómo llega y se instala CASA 37?", en: "How does CASA 37 arrive and get installed?" },
+        a: { es: "Llega plegada en un solo módulo de 20 pies. En sitio se coloca sobre la cimentación o pilotes ajustables, se despliegan las dos alas y el equipo conecta agua, drenaje y electricidad.", en: "It arrives folded as a single 20 ft module. On site it's set on the foundation or adjustable footings, the two wings unfold and the team connects water, drainage and electricity." },
+      },
+      {
+        q: { es: "¿Qué cimentación necesita?", en: "What foundation does it need?" },
+        a: { es: "Por su peso ligero puede apoyarse sobre pilotes ajustables, dados de concreto o una losa sencilla, según el estudio del terreno.", en: "Because it's lightweight, it can sit on adjustable footings, concrete piers or a simple slab, depending on the site study." },
+      },
+      {
+        q: { es: "¿Puedo elegir una sola recámara?", en: "Can I choose a single bedroom?" },
+        a: { es: "Sí. La distribución de una recámara amplía la estancia y la cocina manteniendo el baño completo.", en: "Yes. The one-bedroom layout enlarges the living area and kitchen while keeping the full bathroom." },
+      },
+    ],
+    featured: true,
+  },
   {
     slug: "nido-45",
     name: "NIDO 45",
@@ -246,7 +338,7 @@ export const models: HomeModel[] = [
         a: { es: "Sí. El muro divisorio no es estructural, por lo que puede omitirse desde fábrica para crear una recámara principal con vestidor.", en: "Yes. The dividing wall isn't structural, so it can be omitted at the factory to create a main bedroom with a walk-in closet." },
       },
     ],
-    featured: true,
+    featured: false, // hidden from the homepage grid to keep 6 cards; still in the catalogue
   },
   {
     slug: "casa-85",

@@ -23,7 +23,14 @@ export function FloorPlan({ floor, className, locale, labels }: { floor: Floor; 
 
   return (
     <figure className={cn("rounded-[1.25rem] border border-ink/10 bg-limestone-50 p-4 sm:p-6", className)}>
-      <svg viewBox={`${vbX} ${vbY} ${vbW} ${vbH}`} role="img" aria-label={fill(labels.aria, { name: floorName, width: floor.width, depth: floor.depth })} className="h-auto w-full">
+      <svg
+        viewBox={`${vbX} ${vbY} ${vbW} ${vbH}`}
+        role="img"
+        aria-label={fill(labels.aria, { name: floorName, width: floor.width, depth: floor.depth })}
+        className="mx-auto h-auto w-full"
+        // Cap the rendered size so small plans keep the same metre-to-pixel scale as large ones.
+        style={{ maxWidth: `${Math.round((vbW / SCALE) * 52)}px` }}
+      >
         <defs>
           <pattern id={patternId} width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
             <line x1="0" y1="0" x2="0" y2="8" stroke="#8b8378" strokeWidth="1" opacity="0.5" />

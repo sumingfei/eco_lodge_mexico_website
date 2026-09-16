@@ -88,8 +88,8 @@ export const es = {
     },
     models: {
       eyebrow: "Modelos",
-      title: "Seis casas. Infinitos terrenos.",
-      intro: "Desde un refugio de 45 m² hasta una casa familiar de dos niveles. Cada modelo se adapta a tu terreno, tu clima y tu forma de vivir.",
+      title: "Siete casas. Infinitos terrenos.",
+      intro: "Desde una casa expandible de 37 m² hasta una casa familiar de dos niveles. Cada modelo se adapta a tu terreno, tu clima y tu forma de vivir.",
     },
     process: {
       eyebrow: "Cómo funciona",
@@ -162,10 +162,10 @@ export const es = {
   },
   modelsPage: {
     title: "Modelos de casas prefabricadas modernas",
-    description: "Seis modelos de casas prefabricadas de 45 a 180 m², de uno y dos niveles, con precios desde en MXN y tiempos de construcción estimados. Filtra por precio, superficie, recámaras y baños.",
+    description: "Siete modelos de casas prefabricadas de 37 a 180 m², de uno y dos niveles, con precios desde en MXN y tiempos de construcción estimados. Filtra por precio, superficie, recámaras y baños.",
     eyebrow: "Modelos",
     heading: "Casas diseñadas para fabricarse. Y para vivirse.",
-    intro: "Seis modelos de un solo esquema estructural, de 45 a 180 m². Todos incluyen envolvente aislada, instalaciones y acabados de fábrica. Precios de referencia desde {price}/m²; el precio “desde” de cada modelo corresponde al nivel de acabado Esencial y no incluye terreno, cimentación ni permisos.",
+    intro: "Siete modelos de 37 a 180 m², desde una unidad expandible hasta una casa de dos niveles. Todos incluyen envolvente aislada, instalaciones y acabados de fábrica. Precios de referencia desde {price}/m²; el precio “desde” de cada modelo corresponde al nivel de acabado Esencial y no incluye terreno, cimentación ni permisos.",
     filter: "Filtrar",
     clear: "Limpiar",
     clearFilters: "Limpiar filtros",

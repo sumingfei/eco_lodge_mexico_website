@@ -1,26 +1,126 @@
 @import "tailwindcss";
 
+/* ------------------------------------------------------------------
+   Design tokens — warm Mexican modernism.
+   Limestone / sand / terracotta / wood / charcoal / agave.
+   ------------------------------------------------------------------ */
+@theme {
+  --color-limestone-50: #faf7f1;
+  --color-limestone: #f4efe6;
+  --color-limestone-200: #ece4d6;
+  --color-sand: #e3d5bd;
+  --color-sand-300: #d2bf9f;
+  --color-sand-400: #c0a97f;
+  --color-terracotta: #b5573a;
+  --color-terracotta-600: #9a4630;
+  --color-terracotta-100: #f1dcd2;
+  --color-wood: #a97a50;
+  --color-wood-600: #8c6340;
+  --color-charcoal: #2a2724;
+  --color-charcoal-700: #3b3733;
+  --color-ink: #1a1816;
+  --color-stone: #6d655a;
+  --color-stone-300: #b3aca1;
+  --color-agave: #55604a;
+  --color-agave-700: #3e4636;
+  --color-agave-100: #e1e4d8;
+
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-fraunces), ui-serif, Georgia, serif;
+
+  --breakpoint-3xl: 112rem;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+  --header-h: 4.5rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--color-limestone);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "cv11";
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: var(--color-terracotta);
+    color: #fff;
+  }
+  h1, h2, h3, h4 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-terracotta);
+    outline-offset: 3px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .container-wide {
+    @apply mx-auto w-full max-w-[100rem] px-5 sm:px-8 lg:px-12;
+  }
+  .container-narrow {
+    @apply mx-auto w-full max-w-4xl px-5 sm:px-8;
+  }
+  .eyebrow {
+    @apply text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-stone;
+  }
+  .display {
+    @apply font-serif font-light leading-[1.02] tracking-[-0.02em];
+  }
+  .hairline {
+    @apply border-t border-ink/10;
+  }
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+/* Subtle grain for large editorial surfaces */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Range input styling for the estimator */
+input[type="range"] {
+  accent-color: var(--color-terracotta);
+}
+
+/* Entrance animation for above-the-fold hero copy (no JS needed) */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+  animation: fade-up 1s var(--ease-out-expo) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up { animation: none; }
 }

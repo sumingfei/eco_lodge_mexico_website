@@ -14,12 +14,12 @@ const nextConfig: NextConfig = {
     validateRSCRequestHeaders: false,
   },
   images: {
-    // WebP only: Cloudflare Images falls back from AVIF to WebP for large
-    // renditions while keeping an image/avif content-type, which browsers reject.
-    formats: ["image/webp"],
-    deviceSizes: [360, 480, 640, 828, 1080, 1280, 1600, 1920, 2400],
-    imageSizes: [64, 96, 128, 256, 384, 512],
-    qualities: [60, 75],
+    // Pre-generated static variants (scripts/generate-responsive-images.mjs)
+    // served via image-loader.ts — no runtime optimization on the Worker.
+    loader: "custom",
+    loaderFile: "./image-loader.ts",
+    deviceSizes: [360, 480, 640, 828, 1080, 1280, 1600, 1920],
+    imageSizes: [256],
   },
 };
 

@@ -18,10 +18,5 @@
 			"binding": "WORKER_SELF_REFERENCE",
 			"service": "eco-lodge-mexico-website"
 		}
-	],
-	"images": {
-		// Enable image optimization
-		// see https://opennext.js.org/cloudflare/howtos/image
-		"binding": "IMAGES"
-	}
+	]
 }

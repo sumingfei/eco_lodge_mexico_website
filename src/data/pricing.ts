@@ -61,11 +61,11 @@ export const pricing = {
 
   /** Size ranges offered in the estimator with the m² used for calculation. */
   sizeRanges: [
-    { id: "40-60", label: { es: "40 – 60 m²", en: "40 – 60 m²" }, m2: 50, hint: { es: "CASA 37 · NIDO 45 · un refugio o una unidad de renta", en: "CASA 37 · NIDO 45 · a retreat or a rental unit" } },
-    { id: "60-90", label: { es: "60 – 90 m²", en: "60 – 90 m²" }, m2: 75, hint: { es: "NIDO 65 · CASA 85 · pareja o familia pequeña", en: "NIDO 65 · CASA 85 · couple or small family" } },
+    { id: "40-60", label: { es: "40 – 60 m²", en: "40 – 60 m²" }, m2: 50, hint: { es: "CASA 37 · un refugio o una unidad de renta", en: "CASA 37 · a retreat or a rental unit" } },
+    { id: "60-90", label: { es: "60 – 90 m²", en: "60 – 90 m²" }, m2: 75, hint: { es: "CASA 90 · pareja o familia pequeña", en: "CASA 90 · couple or small family" } },
     { id: "90-120", label: { es: "90 – 120 m²", en: "90 – 120 m²" }, m2: 105, hint: { es: "CASA 110 · familia con hijos", en: "CASA 110 · family with children" } },
-    { id: "120-160", label: { es: "120 – 160 m²", en: "120 – 160 m²" }, m2: 140, hint: { es: "PATIO 140 · casa con patio central", en: "PATIO 140 · courtyard house" } },
-    { id: "160+", label: { es: "160 m² o más", en: "160 m² or more" }, m2: 190, hint: { es: "PATIO 180 · dos niveles, cuatro recámaras", en: "PATIO 180 · two stories, four bedrooms" } },
+    { id: "120-160", label: { es: "120 – 160 m²", en: "120 – 160 m²" }, m2: 140, hint: { es: "CASA 150 · familia grande, dos niveles", en: "CASA 150 · large family, two stories" } },
+    { id: "160+", label: { es: "160 m² o más", en: "160 m² or more" }, m2: 200, hint: { es: "VILLA 200 · VILLA 250 · casas amplias de uno o dos niveles", en: "VILLA 200 · VILLA 250 · large single- or two-story homes" } },
   ],
 
   /** Minimum m² assumed per bedroom (plus shared areas) so bedroom count and size stay coherent. */

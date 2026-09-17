@@ -6,7 +6,9 @@ import type { NextConfig } from "next";
  */
 const nextConfig: NextConfig = {
   images: {
-    formats: ["image/avif", "image/webp"],
+    // WebP only: Cloudflare Images falls back from AVIF to WebP for large
+    // renditions while keeping an image/avif content-type, which browsers reject.
+    formats: ["image/webp"],
     deviceSizes: [360, 480, 640, 828, 1080, 1280, 1600, 1920, 2400],
     imageSizes: [64, 96, 128, 256, 384, 512],
     qualities: [60, 75],

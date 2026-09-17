@@ -2,6 +2,10 @@
 
 Sitio de marketing y generación de leads para una empresa mexicana que diseña, fabrica e instala casas prefabricadas contemporáneas. Next.js 16 (App Router, Turbopack), React 19, TypeScript, Tailwind CSS 4 y Framer Motion. Bilingüe: español (por defecto) e inglés.
 
+## Despliegue
+
+El sitio se despliega en Cloudflare Workers mediante el adaptador OpenNext (`wrangler.jsonc`, `open-next.config.ts`). Cada push a `main` dispara un build en Cloudflare (Workers Builds); comando de build `npx opennextjs-cloudflare build`, despliegue `npx wrangler deploy`.
+
 ## Comandos
 
 ```bash

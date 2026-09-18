@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { useI18n } from "@/i18n/LocaleProvider";
 
 type Props = {
-  source: "cotizador" | "contacto" | "desarrolladores";
+  source: "estimator" | "contact" | "developers";
   title?: string;
   intro?: string;
   submitLabel?: string;

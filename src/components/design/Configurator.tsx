@@ -113,7 +113,7 @@ export function Configurator() {
         <div className="rounded-[1.25rem] bg-ink p-6 text-limestone">
           <p className="font-serif text-xl">{c.likeTitle}</p>
           <p className="mt-2 text-sm text-limestone/70">{c.likeText}</p>
-          <Button href={p("estimator", `?fachada=${facade.id}&interior=${interior.id}`)} variant="light" className="mt-5" icon={<ArrowRight size={16} />}>
+          <Button href={p("estimator", `?facade=${facade.id}&interior=${interior.id}`)} variant="light" className="mt-5" icon={<ArrowRight size={16} />}>
             {c.likeCta}
           </Button>
         </div>

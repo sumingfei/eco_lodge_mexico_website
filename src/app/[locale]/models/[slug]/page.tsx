@@ -23,7 +23,7 @@ export function generateStaticParams() {
   return locales.flatMap((locale) => models.map((m) => ({ locale, slug: m.slug })));
 }
 
-export async function generateMetadata({ params }: PageProps<"/[locale]/modelos/[slug]">): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps<"/[locale]/models/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const { locale, dict } = await getI18n();
   const model = getModelBySlug(slug);
@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/modelos/
   });
 }
 
-export default async function ModelPage({ params }: PageProps<"/[locale]/modelos/[slug]">) {
+export default async function ModelPage({ params }: PageProps<"/[locale]/models/[slug]">) {
   const { slug } = await params;
   const { locale, dict } = await getI18n();
   const model = getModelBySlug(slug);
@@ -224,7 +224,7 @@ export default async function ModelPage({ params }: PageProps<"/[locale]/modelos
                 <Row label={mp.estimatedTime} value={formatWeeks(model.buildWeeks.min, model.buildWeeks.max, locale)} />
               </dl>
               <div className="mt-7 grid gap-3">
-                <Button href={href(locale, "estimator", `?modelo=${model.slug}`)} size="lg" icon={<ArrowRight size={16} />}>
+                <Button href={href(locale, "estimator", `?model=${model.slug}`)} size="lg" icon={<ArrowRight size={16} />}>
                   {dict.common.quoteThisModel}
                 </Button>
                 <Button href={whatsappModelLink(model.name, locale)} external variant="outline" size="lg" icon={<WhatsApp size={16} />}>

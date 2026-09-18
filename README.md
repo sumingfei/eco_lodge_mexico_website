@@ -21,9 +21,10 @@ Copia `.env.example` a `.env.local` y ajusta `NEXT_PUBLIC_SITE_URL` y `LEAD_WEBH
 
 ## Idiomas
 
-- Español es el idioma por defecto y vive en la raíz: `/modelos`, `/cotizador`, `/diseño`…
-- Inglés vive bajo `/en/` con slugs traducidos: `/en/models`, `/en/estimator`, `/en/design`…
-- `src/i18n/routes.ts` es la tabla de rutas (slug por idioma + carpeta interna). `src/proxy.ts` reescribe las URLs públicas a `app/[locale]/…` y redirige las rutas internas a su URL canónica.
+- Español es el idioma por defecto y vive en la raíz: `/models`, `/estimator`, `/design`…
+- Inglés vive bajo `/en/` con los mismos slugs: `/en/models`, `/en/estimator`, `/en/design`…
+- Los slugs antiguos en español (`/modelos`, `/como-funciona`, `/diseño`…) redirigen a los actuales (`legacy` en `routes.ts`).
+- `src/i18n/routes.ts` es la tabla de rutas (slug público por idioma + carpeta interna en inglés bajo `app/[locale]/`). `src/proxy.ts` reescribe las URLs públicas a `app/[locale]/…` y redirige las rutas internas a su URL canónica.
 - Textos de interfaz: `src/i18n/dictionaries/es.ts` (define el tipo) y `en.ts` (debe tener la misma forma; TypeScript falla si falta una clave).
 - Contenido de negocio en `src/data/*`: cada campo de texto es `{ es: "…", en: "…" }`. Para añadir un idioma: agrégalo a `locales` en `src/i18n/config.ts`, crea su diccionario, añade su slug en `routes.ts` y completa los campos `L` en los datos.
 - El selector de idioma (`components/layout/LanguageSwitcher.tsx`) enlaza a la misma página en el otro idioma; cada página emite `hreflang` y el sitemap incluye ambos idiomas.
@@ -59,13 +60,13 @@ src/
   app/
     [locale]/          todas las páginas (layout raíz con <html lang>)
       page.tsx         home
-      modelos/         catálogo con filtros y modelos/[slug]
-      cotizador/       estimador multi-paso + formulario de cotización formal
-      como-funciona/   proceso en 12 pasos y responsabilidades
-      sustentabilidad/ estrategias con diagramas SVG
-      diseno/          configurador de fachada/interior (URL pública: /diseño · /en/design)
-      desarrolladores/ página B2B con formulario
-      preguntas-frecuentes/, proyectos/, contacto/, aviso-de-privacidad/, [...rest]/ (404 localizado)
+      models/          catálogo con filtros y models/[slug]
+      estimator/       estimador multi-paso + formulario de cotización formal
+      how-it-works/    proceso en 12 pasos y responsabilidades
+      sustainability/  estrategias con diagramas SVG
+      design/          configurador de fachada/interior
+      developers/      página B2B con formulario
+      faq/, projects/, contact/, privacy-notice/, [...rest]/ (404 localizado)
     api/lead/          endpoint que recibe leads y los reenvía a LEAD_WEBHOOK_URL
     sitemap.ts, robots.ts, icon.svg
   components/

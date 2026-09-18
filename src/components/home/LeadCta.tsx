@@ -23,7 +23,7 @@ export async function LeadCta() {
             <Button href={href(locale, "estimator")} variant="light" size="lg" icon={<ArrowRight size={18} />}>
               {dict.common.quoteProject}
             </Button>
-            <Button href={href(locale, "estimator", "?terreno=no")} variant="outline-light" size="lg">
+            <Button href={href(locale, "estimator", "?land=no")} variant="outline-light" size="lg">
               {c.noLand}
             </Button>
           </div>

@@ -10,7 +10,7 @@ import { getI18n } from "@/i18n/server";
 export async function FeaturedModels() {
   const { locale, dict } = await getI18n();
   return (
-    <section className="bg-limestone-50 py-20 sm:py-28 lg:py-36" id="modelos">
+    <section className="bg-limestone-50 py-20 sm:py-28 lg:py-36" id="models">
       <div className="container-wide">
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <Reveal>

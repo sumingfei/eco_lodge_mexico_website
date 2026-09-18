@@ -14,11 +14,11 @@ export async function generateMetadata(): Promise<Metadata> {
   return buildMetadata({ locale, route: "contact", title: dict.contactPage.metaTitle, description: fill(dict.contactPage.metaDescription, { hours: t(siteConfig.contact.hours, locale) }) });
 }
 
-export default async function ContactPage({ searchParams }: PageProps<"/[locale]/contacto">) {
+export default async function ContactPage({ searchParams }: PageProps<"/[locale]/contact">) {
   const params = await searchParams;
   const { locale, dict } = await getI18n();
   const cp = dict.contactPage;
-  const sinTerreno = params.terreno === "no";
+  const noLand = params.land === "no";
 
   return (
     <section className="container-wide grid gap-12 pb-24 pt-32 sm:pt-40 lg:grid-cols-12 lg:pb-32">
@@ -53,7 +53,7 @@ export default async function ContactPage({ searchParams }: PageProps<"/[locale]
         </Button>
       </div>
       <div className="lg:col-span-7">
-        <LeadForm source="contacto" titleAs="h2" title={cp.formTitle} submitLabel={cp.formSubmit} showMessage defaults={{ hasLand: sinTerreno ? "no" : undefined }} whatsappMessage={t(siteConfig.whatsapp.defaultMessage, locale)} />
+        <LeadForm source="contact" titleAs="h2" title={cp.formTitle} submitLabel={cp.formSubmit} showMessage defaults={{ hasLand: noLand ? "no" : undefined }} whatsappMessage={t(siteConfig.whatsapp.defaultMessage, locale)} />
       </div>
     </section>
   );

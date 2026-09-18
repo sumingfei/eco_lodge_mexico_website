@@ -29,7 +29,7 @@ export function ModelStickyCta({ slug, name, price }: { slug: string; name: stri
         <a href={whatsappModelLink(name, locale)} target="_blank" rel="noopener noreferrer" aria-label={fill(dict.modelPage.stickyWhatsapp, { name })} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-ink/15 text-ink">
           <WhatsApp size={20} />
         </a>
-        <Button href={p("estimator", `?modelo=${slug}`)} size="sm" className="h-11 px-4">
+        <Button href={p("estimator", `?model=${slug}`)} size="sm" className="h-11 px-4">
           {dict.common.quoteThisModel}
         </Button>
       </div>

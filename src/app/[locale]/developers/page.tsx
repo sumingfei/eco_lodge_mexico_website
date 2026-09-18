@@ -83,7 +83,7 @@ export default async function DevelopersPage() {
           </div>
           <div className="lg:col-span-7">
             <Reveal delay={0.1}>
-              <LeadForm source="desarrolladores" title={d.formTitle} intro={d.formIntro} submitLabel={d.formSubmit} showMessage whatsappMessage={t(siteConfig.whatsapp.developerMessage, locale)} />
+              <LeadForm source="developers" title={d.formTitle} intro={d.formIntro} submitLabel={d.formSubmit} showMessage whatsappMessage={t(siteConfig.whatsapp.developerMessage, locale)} />
             </Reveal>
           </div>
         </div>

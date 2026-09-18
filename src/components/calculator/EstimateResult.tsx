@@ -91,7 +91,7 @@ export function EstimateResult({ input, result, hasLand, stateName, modelName, o
 
       <div className="min-w-0 lg:col-span-5">
         <LeadForm
-          source="cotizador"
+          source="estimator"
           title={r.formTitle}
           intro={r.formIntro}
           defaults={{ location: input.city, hasLand, stateCode: input.stateCode }}

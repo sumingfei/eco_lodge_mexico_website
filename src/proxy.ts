@@ -3,9 +3,9 @@ import { canonicalRedirect, publicToInternal } from "@/i18n/routes";
 
 /**
  * Locale routing.
- * - Spanish (default) is served at the root:      /modelos      → /es/modelos (rewrite)
- * - English is prefixed and uses translated slugs: /en/models    → /en/modelos (rewrite)
- * - Internal paths redirect to their canonical public URL: /es/modelos → /modelos, /en/modelos → /en/models
+ * - Spanish (default) is served at the root:  /models      → /es/models (rewrite)
+ * - English is prefixed:                      /en/models   → /en/models (rewrite)
+ * - Legacy Spanish slugs and /es/… redirect to the canonical URL: /modelos → /models, /es/models → /models
  */
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;

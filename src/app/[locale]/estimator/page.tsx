@@ -22,17 +22,17 @@ function sizeRangeForArea(areaM2: number): SizeRangeId {
   return ranges[4].id;
 }
 
-export default async function EstimatorPage({ searchParams }: PageProps<"/[locale]/cotizador">) {
+export default async function EstimatorPage({ searchParams }: PageProps<"/[locale]/estimator">) {
   const params = await searchParams;
   const { dict } = await getI18n();
-  const modelSlug = typeof params.modelo === "string" ? params.modelo : undefined;
-  const terreno = typeof params.terreno === "string" ? params.terreno : undefined;
+  const modelSlug = typeof params.model === "string" ? params.model : undefined;
+  const land = typeof params.land === "string" ? params.land : undefined;
   const model = modelSlug ? getModelBySlug(modelSlug) : undefined;
 
   const defaults: EstimatorDefaults = {
     sizeRange: model ? sizeRangeForArea(model.areaM2) : undefined,
     bedrooms: model?.bedrooms,
-    hasLand: terreno === "no" ? "no" : undefined,
+    hasLand: land === "no" ? "no" : undefined,
     modelName: model?.name,
   };
 

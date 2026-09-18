@@ -10,7 +10,7 @@ import { NextResponse } from "next/server";
  */
 
 export type LeadPayload = {
-  source: "cotizador" | "contacto" | "desarrolladores";
+  source: "estimator" | "contact" | "developers";
   name: string;
   email: string;
   phone: string;

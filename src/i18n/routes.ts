@@ -1,22 +1,23 @@
-import { defaultLocale, isLocale, type Locale } from "./config";
+import { defaultLocale, isLocale, locales, type Locale } from "./config";
 
 /**
- * Route table: public slug per locale + the folder name under app/[locale].
- * Spanish (default) is served without prefix: /modelos. English: /en/models.
+ * Route table: public slug per locale, the folder name under app/[locale] and
+ * legacy slugs that redirect to the current one.
+ * Spanish (default) is served without prefix: /models. English: /en/models.
  * Keep this file dependency-free: it also runs in the proxy (edge runtime).
  */
 export const routes = {
   home: { es: "", en: "", dir: "" },
-  models: { es: "modelos", en: "models", dir: "modelos" },
-  estimator: { es: "cotizador", en: "estimator", dir: "cotizador" },
-  process: { es: "como-funciona", en: "how-it-works", dir: "como-funciona" },
-  sustainability: { es: "sustentabilidad", en: "sustainability", dir: "sustentabilidad" },
-  design: { es: "diseño", en: "design", dir: "diseno" },
-  developers: { es: "desarrolladores", en: "developers", dir: "desarrolladores" },
-  faq: { es: "preguntas-frecuentes", en: "faq", dir: "preguntas-frecuentes" },
-  projects: { es: "proyectos", en: "projects", dir: "proyectos" },
-  contact: { es: "contacto", en: "contact", dir: "contacto" },
-  privacy: { es: "aviso-de-privacidad", en: "privacy-notice", dir: "aviso-de-privacidad" },
+  models: { es: "models", en: "models", dir: "models", legacy: ["modelos"] },
+  estimator: { es: "estimator", en: "estimator", dir: "estimator", legacy: ["cotizador"] },
+  process: { es: "how-it-works", en: "how-it-works", dir: "how-it-works", legacy: ["como-funciona"] },
+  sustainability: { es: "sustainability", en: "sustainability", dir: "sustainability", legacy: ["sustentabilidad"] },
+  design: { es: "design", en: "design", dir: "design", legacy: ["diseño", "diseno"] },
+  developers: { es: "developers", en: "developers", dir: "developers", legacy: ["desarrolladores"] },
+  faq: { es: "faq", en: "faq", dir: "faq", legacy: ["preguntas-frecuentes"] },
+  projects: { es: "projects", en: "projects", dir: "projects", legacy: ["proyectos"] },
+  contact: { es: "contact", en: "contact", dir: "contact", legacy: ["contacto"] },
+  privacy: { es: "privacy-notice", en: "privacy-notice", dir: "privacy-notice", legacy: ["aviso-de-privacidad"] },
 } as const;
 
 export type RouteKey = keyof typeof routes;
@@ -25,7 +26,7 @@ const localePrefix = (locale: Locale) => (locale === defaultLocale ? "" : `/${lo
 
 /**
  * Public href for a route in a locale. `rest` is appended verbatim
- * (e.g. "/casa-110" or "?modelo=casa-110").
+ * (e.g. "/casa-110" or "?model=casa-110").
  */
 export function href(locale: Locale, key: RouteKey, rest = ""): string {
   const slug = routes[key][locale];
@@ -69,6 +70,23 @@ function findRouteByDir(dir: string | undefined): RouteKey | null {
   return null;
 }
 
+/** Matches a segment against the internal dir name, any locale's slug or a legacy slug. */
+function findRouteByAnySlug(segment: string | undefined): RouteKey | null {
+  const byDir = findRouteByDir(segment);
+  if (byDir) return byDir;
+  for (const l of locales) {
+    const key = findRouteBySlug(segment, l);
+    if (key) return key;
+  }
+  if (segment) {
+    for (const key of Object.keys(routes) as RouteKey[]) {
+      const route = routes[key] as { legacy?: readonly string[] };
+      if (route.legacy?.includes(segment)) return key;
+    }
+  }
+  return null;
+}
+
 /**
  * Maps a public pathname to the internal app path (/[locale]/<dir>/…).
  * Returns null when the first segment is not a known route (lets Next 404).
@@ -98,21 +116,21 @@ export function canonicalRedirect(pathname: string): string | null {
     return key ? encodedHref(defaultLocale, key, tail ? `/${tail}` : "") : `/${rest.map(encodeURIComponent).join("/")}`;
   }
 
-  // /en/<spanish dir> → /en/<english slug>
+  // /en/<internal dir or other locale's slug> → /en/<public slug>
   if (first && isLocale(first)) {
     const locale = first;
     const rest = segments.slice(1);
     if (findRouteBySlug(rest[0], locale)) return null;
-    const key = findRouteByDir(rest[0]);
+    const key = findRouteByAnySlug(rest[0]);
     if (!key) return null;
     const tail = rest.slice(1).map(encodeURIComponent).join("/");
     return encodedHref(locale, key, tail ? `/${tail}` : "");
   }
 
-  // Default locale using an internal dir name that differs from the slug (/diseno → /diseño).
+  // Default locale using a legacy Spanish slug (/como-funciona → /how-it-works).
   if (first && !findRouteBySlug(first, defaultLocale)) {
-    const key = findRouteByDir(first);
-    if (key && routes[key].dir !== routes[key][defaultLocale]) {
+    const key = findRouteByAnySlug(first);
+    if (key) {
       const tail = segments.slice(1).map(encodeURIComponent).join("/");
       return encodedHref(defaultLocale, key, tail ? `/${tail}` : "");
     }

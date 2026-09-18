@@ -50,11 +50,11 @@ export default async function RootLayout({ children }: LayoutProps<"/[locale]">)
       <body className="flex min-h-full flex-col">
         <LocaleProvider locale={locale} dict={dict}>
           <JsonLd data={[organizationJsonLd(locale), websiteJsonLd(locale)]} />
-          <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-limestone">
+          <a href="#content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-limestone">
             {dict.common.skipToContent}
           </a>
           <Header />
-          <main id="contenido" className="flex-1">
+          <main id="content" className="flex-1">
             {children}
           </main>
           <Footer />

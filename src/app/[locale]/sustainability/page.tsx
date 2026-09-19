@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { sustainabilitySections } from "@/data/sustainability";
-import { ecoPillars } from "@/data/eco";
+import Link from "next/link";
+import { ecoPillars, ecoStory } from "@/data/eco";
 import { buildMetadata } from "@/lib/seo";
 import { PageHero } from "@/components/sections/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
@@ -74,6 +75,9 @@ export default async function SustainabilityPage() {
                       <p className="font-serif text-[2rem] leading-none">{figures[section.id]!.value}</p>
                       <p className="mt-2 text-sm font-semibold">{t(figures[section.id]!.label, locale)}</p>
                       <p className="mt-2 text-xs leading-relaxed text-agave-700/80">{t(figures[section.id]!.note, locale)}</p>
+                      <Link href={href(locale, "ecoEstimator")} className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-agave-700 underline underline-offset-4 hover:text-ink">
+                        {t(ecoStory.calculatorCta, locale)} <ArrowRight size={14} />
+                      </Link>
                     </div>
                   )}
                 </Reveal>
@@ -101,11 +105,11 @@ export default async function SustainabilityPage() {
           <h2 className="display text-3xl sm:text-5xl">{sp.ctaTitle}</h2>
           <p className="mx-auto mt-5 max-w-xl text-limestone/80">{sp.ctaText}</p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-            <Button href={href(locale, "estimator")} variant="light" icon={<ArrowRight size={16} />}>
-              {dict.common.quoteMyHome}
+            <Button href={href(locale, "ecoEstimator")} variant="light" icon={<ArrowRight size={16} />}>
+              {t(ecoStory.calculatorCta, locale)}
             </Button>
-            <Button href={href(locale, "models")} variant="outline-light">
-              {dict.common.viewModels}
+            <Button href={href(locale, "estimator")} variant="outline-light">
+              {dict.common.quoteMyHome}
             </Button>
           </div>
         </div>

@@ -27,6 +27,7 @@ export const ecoStory = {
     "In Mexico water is scarce and sun is abundant. That's why every home is designed from the roof down: the roof harvests the rain that falls on it and carries the panels that power the house. They aren't add-ons; they're where the design starts.",
   ),
   cta: W("Ver cómo funciona", "See how it works"),
+  calculatorCta: W("Calcular para mi ciudad", "Calculate for my city"),
 } as const;
 
 export const ecoPillars: EcoPillar[] = [

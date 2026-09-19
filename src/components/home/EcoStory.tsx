@@ -23,6 +23,9 @@ export async function EcoStory() {
       <div className="container-wide">
         <Reveal>
           <SectionHeading eyebrow={t(ecoStory.eyebrow, locale)} title={<span id="eco-story-title">{t(ecoStory.title, locale)}</span>} intro={t(ecoStory.intro, locale)} size="xl" className="max-w-4xl" />
+          <Button href={href(locale, "ecoEstimator")} variant="primary" className="mt-8" icon={<ArrowRight size={16} />}>
+            {t(ecoStory.calculatorCta, locale)}
+          </Button>
         </Reveal>
 
         <div className="mt-16 grid gap-6 lg:mt-24 lg:grid-cols-2 lg:gap-8">

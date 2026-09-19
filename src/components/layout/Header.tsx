@@ -63,7 +63,7 @@ export function Header() {
           <nav aria-label={dict.header.mainNav} className="hidden items-center gap-7 lg:flex">
             {mainNav.map((link) => {
               const target = p(link.route);
-              const active = decodedPath === target || decodedPath.startsWith(`${target}/`);
+              const active = decodedPath === target || (link.route !== "home" && decodedPath.startsWith(`${target}/`));
               return (
                 <Link
                   key={link.route}

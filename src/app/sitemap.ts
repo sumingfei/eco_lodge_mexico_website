@@ -19,6 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { route: "home", priority: 1, changeFrequency: "weekly" },
     { route: "models", priority: 0.9, changeFrequency: "weekly" },
     { route: "estimator", priority: 0.9, changeFrequency: "monthly" },
+    { route: "ecoEstimator", priority: 0.8, changeFrequency: "monthly" },
     { route: "process", priority: 0.8, changeFrequency: "monthly" },
     { route: "sustainability", priority: 0.7, changeFrequency: "monthly" },
     { route: "design", priority: 0.7, changeFrequency: "monthly" },

@@ -10,6 +10,7 @@ export const routes = {
   home: { es: "", en: "", dir: "" },
   models: { es: "models", en: "models", dir: "models", legacy: ["modelos"] },
   estimator: { es: "estimator", en: "estimator", dir: "estimator", legacy: ["cotizador"] },
+  ecoEstimator: { es: "eco-estimator", en: "eco-estimator", dir: "eco-estimator" },
   process: { es: "how-it-works", en: "how-it-works", dir: "how-it-works", legacy: ["como-funciona"] },
   sustainability: { es: "sustainability", en: "sustainability", dir: "sustainability", legacy: ["sustentabilidad"] },
   design: { es: "design", en: "design", dir: "design", legacy: ["diseño", "diseno"] },

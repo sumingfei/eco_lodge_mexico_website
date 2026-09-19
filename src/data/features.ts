@@ -1,9 +1,14 @@
 /** Value proposition and customization content used on the homepage and design page. */
 import type { L } from "@/i18n/config";
 
-export type ValueProp = { id: "diseno" | "precio" | "tiempo" | "sustentabilidad"; title: L; text: L };
+export type ValueProp = { id: "ecologia" | "diseno" | "precio" | "tiempo"; title: L; text: L };
 
 export const valueProps: ValueProp[] = [
+  {
+    id: "ecologia",
+    title: { es: "Agua y sol", en: "Water and sun" },
+    text: { es: "Cada casa capta la lluvia de su techo y se entrega lista para generar su propia energía solar.", en: "Every home harvests rain from its roof and is delivered ready to generate its own solar power." },
+  },
   {
     id: "diseno",
     title: { es: "Diseño", en: "Design" },
@@ -18,11 +23,6 @@ export const valueProps: ValueProp[] = [
     id: "tiempo",
     title: { es: "Tiempo", en: "Time" },
     text: { es: "Gran parte de la vivienda se fabrica en planta mientras se prepara el terreno.", en: "Most of the home is built in the factory while the site is being prepared." },
-  },
-  {
-    id: "sustentabilidad",
-    title: { es: "Sustentabilidad", en: "Sustainability" },
-    text: { es: "Diseños eficientes que reducen materiales, energía y consumo de agua.", en: "Efficient designs that reduce materials, energy and water consumption." },
   },
 ];
 

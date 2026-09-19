@@ -1,10 +1,11 @@
 import { Picture } from "@/components/ui/Picture";
 import { HeaderOverlay } from "@/components/layout/header-theme";
 import { Button } from "@/components/ui/Button";
-import { ArrowRight } from "@/components/ui/Icons";
+import { ArrowRight, IconRain, IconSolar } from "@/components/ui/Icons";
+import { ecoChips } from "@/data/eco";
 import { getStartingPricePerM2 } from "@/lib/pricing";
 import { formatMXN } from "@/lib/format";
-import { href } from "@/i18n";
+import { href, t } from "@/i18n";
 import { getI18n } from "@/i18n/server";
 
 /**
@@ -12,6 +13,8 @@ import { getI18n } from "@/i18n/server";
  * TODO: replace /images/hero/hero-courtyard.jpg with a real company render/photo
  * (ideally a short muted video with a poster) showing a home in a Mexican landscape.
  */
+const chipIcons = { rain: IconRain, solar: IconSolar };
+
 export async function Hero() {
   const { locale, dict } = await getI18n();
   const h = dict.home.hero;
@@ -31,6 +34,17 @@ export async function Hero() {
             {h.title2}
           </h1>
           <p className="animate-fade-up mt-7 max-w-xl text-base leading-relaxed text-limestone/80 [animation-delay:240ms] sm:text-lg">{h.text}</p>
+          <ul aria-label={h.chipsAria} className="animate-fade-up mt-7 flex flex-wrap gap-2.5 [animation-delay:300ms]">
+            {ecoChips.map((chip) => {
+              const Icon = chipIcons[chip.id];
+              return (
+                <li key={chip.id} className="flex items-center gap-2 rounded-full border border-limestone/25 bg-ink/30 px-4 py-2 text-sm text-limestone backdrop-blur-sm">
+                  <Icon size={18} className="text-sand-300" />
+                  {t(chip.text, locale)}
+                </li>
+              );
+            })}
+          </ul>
           <div className="animate-fade-up mt-9 flex flex-col gap-3 [animation-delay:360ms] sm:flex-row sm:items-center">
             <Button href={href(locale, "models")} variant="light" size="lg" icon={<ArrowRight size={18} />}>
               {dict.common.exploreModels}

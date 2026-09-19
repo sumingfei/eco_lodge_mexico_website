@@ -211,3 +211,70 @@ export function RainwaterDiagram({ className, labels }: DiagramProps) {
     </Frame>
   );
 }
+
+/** Section: panels on the roof, inverter and board inside, battery and bidirectional meter to the grid. */
+export function SolarDiagram({ className, labels }: DiagramProps) {
+  const l = labels.solar;
+  return (
+    <Frame title={l.aria} className={className}>
+      <defs>
+        <marker id="solar-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M0 0 10 5 0 10z" fill={TERRA} />
+        </marker>
+      </defs>
+      {/* Ground */}
+      <line x1={40} y1={270} x2={560} y2={270} stroke={INK} strokeWidth={2} />
+      {/* Sun */}
+      <circle cx={90} cy={60} r={18} fill={TERRA} />
+      {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => {
+        const r = (a * Math.PI) / 180;
+        return <line key={a} x1={90 + Math.cos(r) * 26} y1={60 + Math.sin(r) * 26} x2={90 + Math.cos(r) * 34} y2={60 + Math.sin(r) * 34} stroke={TERRA} strokeWidth={1.5} strokeLinecap="round" />;
+      })}
+      <Label x={90} y={110} anchor="middle" color={TERRA}>{l.sun}</Label>
+      {/* Light rays to the panels */}
+      {[0, 1, 2].map((i) => (
+        <line key={i} x1={130 + i * 10} y1={70 + i * 14} x2={215 + i * 22} y2={118 + i * 4} stroke={TERRA} strokeWidth={1.2} strokeDasharray="4 5" markerEnd="url(#solar-arrow)" />
+      ))}
+      {/* House: mono-pitch roof sloping towards the sun */}
+      <path d="M180 270 V150 L440 120 V270 Z" fill="#faf7f1" stroke={INK} strokeWidth={2.5} />
+      <path d="M170 152 L450 118" stroke={INK} strokeWidth={4} />
+      {/* Panels along the roof */}
+      {[0, 1, 2, 3, 4].map((i) => {
+        const x = 200 + i * 46;
+        const y = 148 - i * 5.3;
+        return <rect key={i} x={x} y={y - 12} width={40} height={10} fill={AGAVE} stroke={INK} strokeWidth={1} transform={`rotate(-6.9 ${x} ${y})`} />;
+      })}
+      <Label x={310} y={100} anchor="middle" color={AGAVE}>{l.panels}</Label>
+      {/* Conduit from panels to inverter and board */}
+      <path d="M420 128 V180 H400" fill="none" stroke={INK} strokeWidth={2.5} />
+      <rect x={372} y={170} width={28} height={20} fill={SAND} stroke={INK} strokeWidth={1.5} />
+      <Label x={386} y={205} anchor="middle" color={INK} size={10}>{l.inverter}</Label>
+      <path d="M372 180 H330" fill="none" stroke={INK} strokeWidth={2.5} />
+      <rect x={302} y={166} width={28} height={28} fill="none" stroke={INK} strokeWidth={1.5} />
+      <line x1={308} y1={174} x2={324} y2={174} stroke={INK} strokeWidth={1.5} />
+      <line x1={308} y1={180} x2={324} y2={180} stroke={INK} strokeWidth={1.5} />
+      <line x1={308} y1={186} x2={324} y2={186} stroke={INK} strokeWidth={1.5} />
+      <Label x={316} y={210} anchor="middle" color={INK} size={10}>{l.board}</Label>
+      {/* Household loads */}
+      <path d="M302 180 H250" fill="none" stroke={INK} strokeWidth={2} />
+      <circle cx={240} cy={180} r={7} fill="none" stroke={INK} strokeWidth={1.5} />
+      <Label x={240} y={205} anchor="middle" color={INK} size={10}>{l.house}</Label>
+      {/* Battery (optional) */}
+      <path d="M386 190 V198 M386 210 V232" fill="none" stroke={INK} strokeWidth={2} strokeDasharray="4 3" />
+      <rect x={366} y={232} width={40} height={22} fill="none" stroke={INK} strokeWidth={1.5} strokeDasharray="4 3" />
+      <rect x={406} y={239} width={4} height={8} fill={INK} />
+      <Label x={386} y={266} anchor="middle" color={STONE} size={10}>{l.battery}</Label>
+      {/* Meter and grid */}
+      <path d="M316 194 V250 H495" fill="none" stroke={INK} strokeWidth={2} />
+      <circle cx={495} cy={250} r={11} fill="#faf7f1" stroke={INK} strokeWidth={1.5} />
+      <path d="M490 250 H500 M495 245 V255" stroke={INK} strokeWidth={1.2} />
+      <Label x={505} y={232} anchor="end" color={INK} size={10}>{l.meter}</Label>
+      <path d="M506 250 H540" fill="none" stroke={INK} strokeWidth={2} markerEnd="url(#solar-arrow)" markerStart="url(#solar-arrow)" />
+      <line x1={545} y1={150} x2={545} y2={270} stroke={INK} strokeWidth={2.5} />
+      <path d="M535 160 H555 M537 172 H553" stroke={INK} strokeWidth={1.5} />
+      <Label x={545} y={140} anchor="middle" color={INK} size={10}>{l.grid}</Label>
+      {/* Note */}
+      <Label x={300} y={330} anchor="middle" color={STONE} size={10}>{l.note}</Label>
+    </Frame>
+  );
+}

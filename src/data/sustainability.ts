@@ -10,16 +10,16 @@ const W = (es: string, en: string): L => ({ es, en });
 export type SustainabilityStrategy = { title: L; text: L };
 
 export const homeStrategies: SustainabilityStrategy[] = [
+  { title: W("Captación de agua de lluvia", "Rainwater harvesting"), text: W("Canalones, bajantes y filtro de primeras lluvias incluidos; cisterna dimensionada según tu techo y tu región.", "Gutters, downpipes and first-flush filter included; cistern sized to your roof and your region.") },
+  { title: W("Energía solar", "Solar energy"), text: W("Cubierta estructurada y canalizaciones listas para un sistema fotovoltaico, interconectado o con baterías.", "Structured roof and conduits ready for a photovoltaic system, grid-tied or with batteries.") },
+  { title: W("Calentamiento solar de agua", "Solar water heating"), text: W("Calentador solar con respaldo de gas o eléctrico en cualquier nivel de acabado.", "Solar water heater with gas or electric backup at any finish level.") },
+  { title: W("Orientación solar pasiva", "Passive solar orientation"), text: W("Cada modelo se gira según el terreno para proteger el vidrio del sol de la tarde.", "Each model is rotated on its site to protect glazing from the afternoon sun.") },
   { title: W("Aislamiento de alto desempeño", "High-performance insulation"), text: W("Muros, losa y cubierta con aislamiento continuo que reduce la necesidad de climatización.", "Walls, floor and roof with continuous insulation that reduces the need for heating and cooling.") },
   { title: W("Ventilación natural", "Natural ventilation"), text: W("Ventanas enfrentadas y patios que generan corrientes cruzadas en cada espacio.", "Opposing windows and courtyards that create cross breezes in every room.") },
-  { title: W("Orientación solar pasiva", "Passive solar orientation"), text: W("Cada modelo se gira según el terreno para proteger el vidrio del sol de la tarde.", "Each model is rotated on its site to protect glazing from the afternoon sun.") },
-  { title: W("Preparación para paneles solares", "Solar-panel ready"), text: W("Cubierta estructurada y canalizaciones listas para un sistema fotovoltaico.", "Structured roof and conduits ready for a photovoltaic system.") },
-  { title: W("Captación de agua de lluvia", "Rainwater harvesting"), text: W("Bajantes y espacio de cisterna preparados para almacenar y filtrar el agua del techo.", "Downpipes and cistern space prepared to store and filter roof water.") },
   { title: W("Grifería de bajo consumo", "Low-flow fixtures"), text: W("Sanitarios, regaderas y llaves ahorradoras incluidos en todos los niveles de acabado.", "Water-saving toilets, showers and faucets included at every finish level.") },
-  { title: W("Iluminación eficiente", "Efficient lighting"), text: W("LED en toda la casa y luz natural en cada espacio habitable.", "LED throughout and daylight in every habitable room.") },
+  { title: W("Reúso de aguas grises (opcional)", "Greywater reuse (optional)"), text: W("Sistema para tratar el agua de regaderas y lavabos y reutilizarla en riego.", "A system to treat shower and basin water and reuse it for irrigation.") },
   { title: W("Menos desperdicio en obra", "Less construction waste"), text: W("Corte de precisión en planta y reaprovechamiento de sobrantes entre proyectos.", "Precision cutting in the factory and reuse of offcuts across projects.") },
   { title: W("Materiales apropiados al lugar", "Locally appropriate materials"), text: W("Recubrimientos y protecciones seleccionados según clima: costa, desierto, bosque o ciudad.", "Cladding and protection selected by climate: coast, desert, forest or city.") },
-  { title: W("Reúso de aguas grises (opcional)", "Greywater reuse (optional)"), text: W("Sistema para tratar el agua de regaderas y lavabos y reutilizarla en riego.", "A system to treat shower and basin water and reuse it for irrigation.") },
 ];
 
 export type SustainabilitySection = {
@@ -27,12 +27,48 @@ export type SustainabilitySection = {
   title: L;
   intro: L;
   points: SustainabilityStrategy[];
-  diagram?: "orientation" | "ventilation" | "shading" | "insulation" | "rainwater";
+  diagram?: "orientation" | "ventilation" | "shading" | "insulation" | "rainwater" | "solar";
   /** Photo shown when the section has no diagram. TODO: replace with company photography. */
   image?: { src: string; alt: L };
 };
 
 export const sustainabilitySections: SustainabilitySection[] = [
+  {
+    id: "agua",
+    title: W("Agua de lluvia", "Rainwater"),
+    intro: W("En gran parte de México el agua es el recurso más escaso. Por eso cada casa nace con la captación resuelta: el techo recoge, el filtro limpia y la cisterna guarda. Es el primer sistema que diseñamos, no el último que agregamos.", "Across much of Mexico, water is the scarcest resource. So every home is born with harvesting solved: the roof collects, the filter cleans and the cistern stores. It's the first system we design, not the last one we add."),
+    diagram: "rainwater",
+    points: [
+      { title: W("Captación pluvial incluida", "Rainwater harvesting included"), text: W("Canalones, bajantes y filtro de primeras lluvias vienen de fábrica; la cisterna se dimensiona según la superficie de techo y la precipitación local.", "Gutters, downpipes and first-flush filter come from the factory; the cistern is sized to roof area and local rainfall.") },
+      { title: W("Del techo a la llave", "From roof to tap"), text: W("El agua captada abastece sanitarios, lavado y riego; con filtración adicional puede cubrir toda la casa.", "Harvested water supplies toilets, laundry and irrigation; with additional filtration it can serve the whole house.") },
+      { title: W("Grifería de bajo consumo", "Low-flow fixtures"), text: W("Incluida en todos los niveles de acabado.", "Included at every finish level.") },
+      { title: W("Reúso de aguas grises", "Greywater reuse"), text: W("Sistema opcional que trata agua de regaderas y lavabos para riego de jardín.", "Optional system that treats shower and basin water for garden irrigation.") },
+      { title: W("Biodigestor", "Biodigester"), text: W("Para terrenos sin drenaje municipal, en lugar de fosa séptica convencional.", "For sites without municipal drainage, instead of a conventional septic tank.") },
+    ],
+  },
+  {
+    id: "energia-renovable",
+    title: W("Energía solar", "Solar energy"),
+    intro: W("México tiene uno de los mejores recursos solares del mundo. Cada cubierta se orienta, inclina y estructura pensando en los paneles; el sistema se dimensiona según tu consumo estimado y la tarifa de CFE de tu zona, y puede instalarse desde el inicio o más adelante.", "Mexico has one of the best solar resources in the world. Every roof is oriented, pitched and structured with panels in mind; the system is sized to your estimated consumption and your area's CFE tariff, and can be installed from the start or later."),
+    diagram: "solar",
+    points: [
+      { title: W("Cubierta lista para paneles", "Panel-ready roof"), text: W("Estructura calculada para el peso de los paneles y canalización eléctrica hasta el tablero, incluidas en todos los modelos.", "Structure sized for panel loads and electrical conduits to the panel board, included in every model.") },
+      { title: W("Interconectado a la red", "Grid-tied"), text: W("La opción más común: la casa genera de día y compensa con la red de noche mediante medidor bidireccional.", "The most common option: the house generates by day and offsets with the grid at night through a bidirectional meter.") },
+      { title: W("Con respaldo de baterías", "With battery backup"), text: W("Para terrenos con cortes frecuentes o sin acceso a la red.", "For sites with frequent outages or no grid access.") },
+      { title: W("Dimensionamiento honesto", "Honest sizing"), text: W("Cotizamos el sistema con base en el consumo real esperado, no en promesas de 'cero recibo'.", "We size the system on realistic expected consumption, not on 'zero bill' promises.") },
+    ],
+  },
+  {
+    id: "energia",
+    title: W("Menos demanda de energía", "Lower energy demand"),
+    intro: W("Menos demanda primero; después, generación. Cuanto menos consume la casa, más pequeño y accesible es el sistema solar que la cubre.", "Lower demand first; then generation. The less the house consumes, the smaller and more affordable the solar system that covers it."),
+    image: { src: "/images/hero/hero-garden.jpg", alt: W("Casa con cubierta plana preparada para paneles solares y grandes ventanales sombreados", "House with a flat roof prepared for solar panels and large shaded windows") },
+    points: [
+      { title: W("Iluminación LED", "LED lighting"), text: W("Incluida en todos los espacios, con circuitos separados para exteriores.", "Included in every room, with separate circuits for exteriors.") },
+      { title: W("Calentamiento solar de agua", "Solar water heating"), text: W("Opción de calentador solar con respaldo de gas o eléctrico.", "Optional solar water heater with gas or electric backup.") },
+      { title: W("Electrodomésticos eficientes", "Efficient appliances"), text: W("Recomendamos equipos con etiqueta de eficiencia energética en cocina y lavado.", "We recommend energy-labelled appliances for kitchen and laundry.") },
+    ],
+  },
   {
     id: "diseno-pasivo",
     title: W("Diseño pasivo", "Passive design"),
@@ -63,7 +99,7 @@ export const sustainabilitySections: SustainabilitySection[] = [
     points: [
       { title: W("Ventanas enfrentadas", "Opposing windows"), text: W("La distribución de cada modelo coloca aberturas en lados opuestos de los espacios principales.", "Each model's layout places openings on opposite sides of the main rooms.") },
       { title: W("Ventilación nocturna", "Night ventilation"), text: W("Ventanas altas operables que permiten enfriar la casa de noche sin comprometer la seguridad.", "Operable high windows that cool the house at night without compromising security.") },
-      { title: W("Patios y terrazas", "Courtyards and terraces"), text: W("En los modelos Patio, el jardín interior actúa como chimenea térmica que extrae el aire caliente.", "In the Patio models, the inner garden acts as a thermal chimney that draws hot air out.") },
+      { title: W("Patios y terrazas", "Courtyards and terraces"), text: W("En los modelos Villa, el jardín interior actúa como chimenea térmica que extrae el aire caliente.", "In the Villa models, the inner garden acts as a thermal chimney that draws hot air out.") },
     ],
   },
   {
@@ -75,41 +111,6 @@ export const sustainabilitySections: SustainabilitySection[] = [
       { title: W("Aleros calculados", "Calculated eaves"), text: W("Entre 1.2 y 1.5 m de volado sobre los ventanales principales, según la orientación.", "1.2 to 1.5 m of overhang above the main glazing, depending on orientation.") },
       { title: W("Celosías y pérgolas", "Screens and pergolas"), text: W("Elementos de madera o metal que filtran la luz en terrazas y fachadas poniente.", "Timber or metal elements that filter light on terraces and west facades.") },
       { title: W("Vegetación como sombra", "Vegetation as shade"), text: W("Recomendamos árboles de hoja caduca al poniente y enredaderas en pérgolas.", "We recommend deciduous trees to the west and climbers on pergolas.") },
-    ],
-  },
-  {
-    id: "energia",
-    title: W("Energía", "Energy"),
-    intro: W("Menos demanda primero; después, generación. Todos los modelos se entregan preparados para energía solar.", "Lower demand first; then generation. Every model is delivered solar-ready."),
-    image: { src: "/images/hero/hero-garden.jpg", alt: W("Casa con cubierta plana preparada para paneles solares y grandes ventanales sombreados", "House with a flat roof prepared for solar panels and large shaded windows") },
-    points: [
-      { title: W("Iluminación LED", "LED lighting"), text: W("Incluida en todos los espacios, con circuitos separados para exteriores.", "Included in every room, with separate circuits for exteriors.") },
-      { title: W("Preparación fotovoltaica", "Photovoltaic provision"), text: W("Cubierta estructurada para el peso de paneles y canalizaciones hasta el tablero.", "Roof structured for panel loads and conduits to the panel board.") },
-      { title: W("Calentamiento solar de agua", "Solar water heating"), text: W("Opción de calentador solar con respaldo de gas o eléctrico.", "Optional solar water heater with gas or electric backup.") },
-      { title: W("Electrodomésticos eficientes", "Efficient appliances"), text: W("Recomendamos equipos con etiqueta de eficiencia energética en cocina y lavado.", "We recommend energy-labelled appliances for kitchen and laundry.") },
-    ],
-  },
-  {
-    id: "energia-renovable",
-    title: W("Energía renovable", "Renewable energy"),
-    intro: W("Un sistema fotovoltaico se dimensiona según tu consumo estimado y la tarifa de CFE de tu zona. Puede instalarse desde el inicio o más adelante.", "A photovoltaic system is sized to your estimated consumption and your area's CFE tariff. It can be installed from the start or later."),
-    image: { src: "/images/landscapes/desierto.jpg", alt: W("Paisaje desértico mexicano bajo un sol intenso", "Mexican desert landscape under intense sun") },
-    points: [
-      { title: W("Interconectado a la red", "Grid-tied"), text: W("La opción más común: la casa genera de día y compensa con la red de noche mediante medidor bidireccional.", "The most common option: the house generates by day and offsets with the grid at night through a bidirectional meter.") },
-      { title: W("Con respaldo de baterías", "With battery backup"), text: W("Para terrenos con cortes frecuentes o sin acceso a la red.", "For sites with frequent outages or no grid access.") },
-      { title: W("Dimensionamiento honesto", "Honest sizing"), text: W("Cotizamos el sistema con base en el consumo real esperado, no en promesas de 'cero recibo'.", "We size the system on realistic expected consumption, not on 'zero bill' promises.") },
-    ],
-  },
-  {
-    id: "agua",
-    title: W("Agua", "Water"),
-    intro: W("En gran parte de México el agua es el recurso más escaso. La casa reduce el consumo y puede captar y reutilizar.", "Across much of Mexico, water is the scarcest resource. The house reduces consumption and can harvest and reuse."),
-    diagram: "rainwater",
-    points: [
-      { title: W("Grifería de bajo consumo", "Low-flow fixtures"), text: W("Incluida en todos los niveles de acabado.", "Included at every finish level.") },
-      { title: W("Captación pluvial", "Rainwater harvesting"), text: W("Bajantes, filtro de primeras lluvias y cisterna dimensionada según la superficie de techo y la precipitación local.", "Downpipes, first-flush filter and a cistern sized to roof area and local rainfall.") },
-      { title: W("Reúso de aguas grises", "Greywater reuse"), text: W("Sistema opcional que trata agua de regaderas y lavabos para riego de jardín.", "Optional system that treats shower and basin water for garden irrigation.") },
-      { title: W("Biodigestor", "Biodigester"), text: W("Para terrenos sin drenaje municipal, en lugar de fosa séptica convencional.", "For sites without municipal drainage, instead of a conventional septic tank.") },
     ],
   },
   {

@@ -2,11 +2,11 @@ import { valueProps } from "@/data/features";
 import { siteConfig } from "@/data/site";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
-import { IconDesign, IconPrice, IconSun, IconTime } from "@/components/ui/Icons";
+import { IconDesign, IconPrice, IconRain, IconTime } from "@/components/ui/Icons";
 import { t } from "@/i18n";
 import { getI18n } from "@/i18n/server";
 
-const icons = { diseno: IconDesign, precio: IconPrice, tiempo: IconTime, sustentabilidad: IconSun };
+const icons = { ecologia: IconRain, diseno: IconDesign, precio: IconPrice, tiempo: IconTime };
 
 export async function ValueProps() {
   const { locale, dict } = await getI18n();

@@ -110,11 +110,11 @@ const commonIncluded: L[] = [
 ];
 
 const commonSustainability: L[] = [
+  { es: "Captación pluvial: canalones, bajantes y filtro listos para conectar a cisterna", en: "Rainwater harvesting: gutters, downpipes and filter ready to connect to a cistern" },
+  { es: "Cubierta estructurada y canalización eléctrica para sistema fotovoltaico", en: "Roof structured and electrical conduits for a photovoltaic system" },
   { es: "Envolvente térmica con aislamiento continuo", en: "Thermal envelope with continuous insulation" },
   { es: "Ventilación cruzada con ventanas enfrentadas", en: "Cross ventilation with opposing windows" },
   { es: "Aleros y volados calculados para sombrear el vidrio en verano", en: "Eaves and overhangs sized to shade glazing in summer" },
-  { es: "Preparación eléctrica para sistema fotovoltaico", en: "Electrical provision for a photovoltaic system" },
-  { es: "Bajantes pluviales listas para conectar a captación", en: "Downpipes ready to connect to rainwater harvesting" },
   { es: "Grifería y sanitarios de bajo consumo", en: "Low-flow fixtures and toilets" },
 ];
 
@@ -206,12 +206,13 @@ export const models: HomeModel[] = [
     ],
     upgrades: [U.pitchedRoof, U.porchDeck, U.cladding, U.oneBedLayout, U.solar, U.rain, U.ac, U.smart],
     sustainability: [
+      { es: "Captación pluvial: techo a dos aguas con canalones y bajantes listos para cisterna", en: "Rainwater harvesting: pitched roof with gutters and downpipes ready for a cistern" },
+      { es: "Cubierta preparada para paneles solares y canalización hasta el tablero", en: "Roof prepared for solar panels with conduits to the panel board" },
       { es: "Envolvente aislada en muros, piso y cubierta", en: "Insulated envelope in walls, floor and roof" },
       { es: "Doble vidrio en toda la cancelería", en: "Double glazing throughout" },
       { es: "Iluminación LED incluida", en: "LED lighting included" },
       { es: "Fabricación completa en planta: obra en sitio mínima", en: "Fully factory-built: minimal site work" },
       { es: "Transporte plegado: dos casas por contenedor", en: "Ships folded: two homes per container" },
-      { es: "Preparación para paneles solares y captación pluvial", en: "Ready for solar panels and rainwater harvesting" },
     ],
     faq: [
       {
@@ -314,12 +315,13 @@ export const models: HomeModel[] = [
     ],
     upgrades: [U.pitchedRoof, U.porchDeck, U.cladding, U.pergola, U.solar, U.rain, U.grey, U.ac, U.smart],
     sustainability: [
+      { es: "Captación pluvial: cubierta plana con bajantes listos para cisterna", en: "Rainwater harvesting: flat roof with downpipes ready for a cistern" },
+      { es: "Cubierta plana estructurada para paneles solares y canalización hasta el tablero", en: "Flat roof structured for solar panels with conduits to the panel board" },
       { es: "Envolvente aislada en muros, piso y cubierta de ambos módulos", en: "Insulated envelope in walls, floor and roof of both modules" },
       { es: "Doble vidrio en toda la cancelería", en: "Double glazing throughout" },
       { es: "Iluminación LED incluida", en: "LED lighting included" },
       { es: "Fabricación completa en planta: obra en sitio mínima", en: "Fully factory-built: minimal site work" },
       { es: "Huella compacta: dos niveles sobre 9 × 6.75 m de terreno", en: "Compact footprint: two floors on 9 × 6.75 m of land" },
-      { es: "Preparación para paneles solares y captación pluvial", en: "Ready for solar panels and rainwater harvesting" },
     ],
     faq: [
       {

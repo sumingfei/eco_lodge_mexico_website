@@ -6,14 +6,14 @@ import { Reveal } from "@/components/ui/Reveal";
 import { Button } from "@/components/ui/Button";
 import { Picture } from "@/components/ui/Picture";
 import { ArrowRight } from "@/components/ui/Icons";
-import { CrossVentilationDiagram, InsulationDiagram, RainwaterDiagram, RoofShadingDiagram, SolarOrientationDiagram } from "@/components/diagrams/Diagrams";
+import { CrossVentilationDiagram, InsulationDiagram, RainwaterDiagram, RoofShadingDiagram, SolarDiagram, SolarOrientationDiagram } from "@/components/diagrams/Diagrams";
 import { cn } from "@/lib/utils";
 import { href, t } from "@/i18n";
 import { getI18n } from "@/i18n/server";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { locale, dict } = await getI18n();
-  return buildMetadata({ locale, route: "sustainability", title: dict.sustainabilityPage.metaTitle, description: dict.sustainabilityPage.metaDescription, image: "/images/interiors/sala-jardin.jpg" });
+  return buildMetadata({ locale, route: "sustainability", title: dict.sustainabilityPage.metaTitle, description: dict.sustainabilityPage.metaDescription, image: "/images/hero/hero-garden.jpg" });
 }
 
 const diagrams = {
@@ -22,6 +22,7 @@ const diagrams = {
   shading: RoofShadingDiagram,
   insulation: InsulationDiagram,
   rainwater: RainwaterDiagram,
+  solar: SolarDiagram,
 };
 
 export default async function SustainabilityPage() {
@@ -29,7 +30,7 @@ export default async function SustainabilityPage() {
   const sp = dict.sustainabilityPage;
   return (
     <>
-      <PageHero eyebrow={sp.eyebrow} title={sp.title} intro={sp.intro} image="/images/interiors/sala-jardin.jpg" alt={sp.alt} />
+      <PageHero eyebrow={sp.eyebrow} title={sp.title} intro={sp.intro} image="/images/hero/hero-garden.jpg" alt={sp.alt} />
 
       <nav aria-label={sp.sectionsAria} className="sticky top-[var(--header-h)] z-30 border-b border-ink/10 bg-limestone/90 backdrop-blur">
         <div className="container-wide flex gap-6 overflow-x-auto py-3 text-sm">

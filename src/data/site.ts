@@ -12,8 +12,8 @@ export const siteConfig = {
   legalName: "Habitar Casas Prefabricadas S.A. de C.V.", // TODO: razón social real
   tagline: { es: "Diseño que puedes habitar.", en: "Design you can live in." } satisfies L,
   description: {
-    es: "Casas prefabricadas de diseño contemporáneo en México. Arquitectura, eficiencia y construcción modular para tu terreno, con costos más predecibles y menos tiempo de obra.",
-    en: "Contemporary prefab homes in Mexico. Architecture, efficiency and modular construction for your land, with more predictable costs and less time on site.",
+    es: "Casas prefabricadas de diseño ecológico en México: captación de agua de lluvia y energía solar integradas desde el diseño. Arquitectura contemporánea y construcción modular para tu terreno, con costos más predecibles y menos tiempo de obra.",
+    en: "Eco-designed prefab homes in Mexico: rainwater harvesting and solar power built in from the design stage. Contemporary architecture and modular construction for your land, with more predictable costs and less time on site.",
   } satisfies L,
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://habitar.mx", // TODO: dominio real
   country: "MX",

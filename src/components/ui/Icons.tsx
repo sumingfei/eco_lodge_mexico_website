@@ -65,3 +65,11 @@ export const IconTime = ({ size = 28, ...p }: IconProps) => (
 export const IconSun = ({ size = 28, ...p }: IconProps) => (
   <svg {...base(size)} {...p} strokeWidth={1.25}><path d="M3 18h18" /><path d="M6 18a6 6 0 0 1 12 0" /><path d="M12 3v3M4.5 7.5l2 2M19.5 7.5l-2 2" /><path d="M2 21h20" /></svg>
 );
+
+/* Ecological-design icons: rainwater and solar. */
+export const IconRain = ({ size = 28, ...p }: IconProps) => (
+  <svg {...base(size)} {...p} strokeWidth={1.25}><path d="M12 3.5c-3.2 4-5.5 6.9-5.5 9.8a5.5 5.5 0 0 0 11 0c0-2.9-2.3-5.8-5.5-9.8Z" /><path d="M9.5 14.5a2.5 2.5 0 0 0 2.5 2.5" /></svg>
+);
+export const IconSolar = ({ size = 28, ...p }: IconProps) => (
+  <svg {...base(size)} {...p} strokeWidth={1.25}><path d="m5 8-2 8h18l-2-8H5Z" /><path d="M4.2 12h15.6M8 8l-1 8M16 8l1 8M12 8v8" /><path d="M12 16v4M9 20h6" /></svg>
+);

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { sustainabilitySections } from "@/data/sustainability";
+import { ecoPillars } from "@/data/eco";
 import { buildMetadata } from "@/lib/seo";
 import { PageHero } from "@/components/sections/PageHero";
 import { Reveal } from "@/components/ui/Reveal";
@@ -24,6 +25,12 @@ const diagrams = {
   rainwater: RainwaterDiagram,
   solar: SolarDiagram,
 };
+
+/** Illustrative rain/solar figures from the eco story, shown in the matching sections. */
+const figures = {
+  agua: ecoPillars.find((p) => p.id === "rain")!.figure,
+  "energia-renovable": ecoPillars.find((p) => p.id === "solar")!.figure,
+} as Record<string, (typeof ecoPillars)[number]["figure"] | undefined>;
 
 export default async function SustainabilityPage() {
   const { locale, dict } = await getI18n();
@@ -62,6 +69,13 @@ export default async function SustainabilityPage() {
                       </li>
                     ))}
                   </ul>
+                  {figures[section.id] && (
+                    <div className="mt-8 rounded-2xl bg-agave-100 p-5 text-agave-700">
+                      <p className="font-serif text-[2rem] leading-none">{figures[section.id]!.value}</p>
+                      <p className="mt-2 text-sm font-semibold">{t(figures[section.id]!.label, locale)}</p>
+                      <p className="mt-2 text-xs leading-relaxed text-agave-700/80">{t(figures[section.id]!.note, locale)}</p>
+                    </div>
+                  )}
                 </Reveal>
                 {Diagram ? (
                   <Reveal delay={0.1} className={cn("lg:col-span-7", i % 2 === 1 && "lg:order-1")}>

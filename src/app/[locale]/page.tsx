@@ -24,6 +24,7 @@ export default function HomePage() {
   return (
     <>
       <Hero />
+      <div id="content-start" />
       <EcoStory />
       <ValueProps />
       <FeaturedModels />

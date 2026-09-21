@@ -82,6 +82,8 @@ export const en: Dictionary = {
       title2: "Live on the sun.",
       text: "Contemporary prefab homes that harvest the water from their roof and arrive ready to generate their own power. Less waste, less time, more predictable costs.",
       chipsAria: "Ecological design",
+      videoAria: "Introduction video of our homes",
+      scroll: "Scroll to content",
       alt: "Contemporary prefab home with timber cladding and an entry courtyard",
     },
     valueProps: {

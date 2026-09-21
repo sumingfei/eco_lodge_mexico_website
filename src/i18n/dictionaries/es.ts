@@ -83,6 +83,8 @@ export const es = {
       title2: "Vive del sol.",
       text: "Casas prefabricadas de diseño contemporáneo que captan el agua de su techo y se entregan listas para generar su propia energía. Menos desperdicio, menos tiempo, costos más predecibles.",
       chipsAria: "Diseño ecológico",
+      videoAria: "Video de presentación de nuestras casas",
+      scroll: "Bajar al contenido",
       alt: "Casa prefabricada contemporánea con recubrimiento de madera y patio de acceso",
     },
     valueProps: {

@@ -13,7 +13,7 @@ import { getI18n } from "@/i18n/server";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { locale, dict } = await getI18n();
-  return buildMetadata({ locale, route: "models", title: dict.modelsPage.title, description: dict.modelsPage.description, image: "/images/models/casa-110-01.jpg" });
+  return buildMetadata({ locale, route: "models", title: dict.modelsPage.title, description: dict.modelsPage.description, image: "/images/models/casa-90-01.jpg" });
 }
 
 export default async function ModelsPage() {

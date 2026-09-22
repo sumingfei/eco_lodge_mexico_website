@@ -92,8 +92,8 @@ export const en: Dictionary = {
     },
     models: {
       eyebrow: "Models",
-      title: "Six homes. Endless sites.",
-      intro: "From a 37 m² expandable home to a two-story family home. Every model adapts to your land, your climate and the way you live.",
+      title: "Two homes. Endless sites.",
+      intro: "A 37 m² expandable home and a 90 m² two-story family home. Every model adapts to your land, your climate and the way you live.",
     },
     process: {
       eyebrow: "How it works",
@@ -166,10 +166,10 @@ export const en: Dictionary = {
   },
   modelsPage: {
     title: "Modern prefab home models",
-    description: "Six prefab home models from 37 to 250 m², single and two-story, with starting prices in MXN and estimated build times. Filter by price, area, bedrooms and bathrooms.",
+    description: "Two prefab home models, 37 and 90 m², single and two-story, with starting prices in MXN and estimated build times. Filter by price, area, bedrooms and bathrooms.",
     eyebrow: "Models",
     heading: "Homes designed to be built. And lived in.",
-    intro: "Six models from 37 to 250 m², from an expandable unit to a two-story house. All include an insulated envelope, installations and factory finishes. Reference prices from {price}/m²; each model's starting price corresponds to the Essential finish level and excludes land, foundation and permits.",
+    intro: "Two models, 37 and 90 m²: an expandable unit and a two-story house. All include an insulated envelope, installations and factory finishes. Reference prices from {price}/m²; each model's starting price corresponds to the Essential finish level and excludes land, foundation and permits.",
     filter: "Filter",
     clear: "Clear",
     clearFilters: "Clear filters",

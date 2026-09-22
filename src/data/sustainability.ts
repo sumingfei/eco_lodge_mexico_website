@@ -99,7 +99,7 @@ export const sustainabilitySections: SustainabilitySection[] = [
     points: [
       { title: W("Ventanas enfrentadas", "Opposing windows"), text: W("La distribución de cada modelo coloca aberturas en lados opuestos de los espacios principales.", "Each model's layout places openings on opposite sides of the main rooms.") },
       { title: W("Ventilación nocturna", "Night ventilation"), text: W("Ventanas altas operables que permiten enfriar la casa de noche sin comprometer la seguridad.", "Operable high windows that cool the house at night without compromising security.") },
-      { title: W("Patios y terrazas", "Courtyards and terraces"), text: W("En los modelos Villa, el jardín interior actúa como chimenea térmica que extrae el aire caliente.", "In the Villa models, the inner garden acts as a thermal chimney that draws hot air out.") },
+      { title: W("Patios y terrazas", "Courtyards and terraces"), text: W("Cuando el terreno lo permite, un patio o terraza cubierta actúa como chimenea térmica que extrae el aire caliente.", "Where the site allows, a courtyard or covered terrace acts as a thermal chimney that draws hot air out.") },
     ],
   },
   {

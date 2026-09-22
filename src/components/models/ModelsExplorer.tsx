@@ -17,14 +17,18 @@ type Filters = {
   stories: 1 | 2 | null;
 };
 
+const PRICE_STEP = 50000;
+const AREA_STEP = 5;
+
 /** Client-side filtering of the catalogue by price, area, bedrooms, bathrooms and stories. */
 export function ModelsExplorer({ models }: Props) {
   const { dict } = useI18n();
   const m = dict.modelsPage;
-  const maxPriceAll = Math.max(...models.map((m) => m.priceFrom));
-  const minPriceAll = Math.min(...models.map((m) => m.priceFrom));
-  const maxAreaAll = Math.max(...models.map((m) => m.areaM2));
-  const minAreaAll = Math.min(...models.map((m) => m.areaM2));
+  // Slider bounds are snapped to the step so the largest model is always reachable.
+  const maxPriceAll = Math.ceil(Math.max(...models.map((m) => m.priceFrom)) / PRICE_STEP) * PRICE_STEP;
+  const minPriceAll = Math.floor(Math.min(...models.map((m) => m.priceFrom)) / PRICE_STEP) * PRICE_STEP;
+  const maxAreaAll = Math.ceil(Math.max(...models.map((m) => m.areaM2)) / AREA_STEP) * AREA_STEP;
+  const minAreaAll = Math.floor(Math.min(...models.map((m) => m.areaM2)) / AREA_STEP) * AREA_STEP;
   const bedroomOptions = [...new Set(models.map((m) => m.bedrooms))].sort((a, b) => a - b);
   const bathroomOptions = [...new Set(models.map((m) => Math.ceil(m.bathrooms)))].sort((a, b) => a - b);
 
@@ -66,7 +70,7 @@ export function ModelsExplorer({ models }: Props) {
               value={filters.maxPrice}
               min={minPriceAll}
               max={maxPriceAll}
-              step={50000}
+              step={PRICE_STEP}
               display={`${m.upTo} ${formatMXNCompact(filters.maxPrice)}`}
               onChange={(v) => setFilters((f) => ({ ...f, maxPrice: v }))}
             />
@@ -76,7 +80,7 @@ export function ModelsExplorer({ models }: Props) {
               value={filters.maxArea}
               min={minAreaAll}
               max={maxAreaAll}
-              step={5}
+              step={AREA_STEP}
               display={`${m.upTo} ${filters.maxArea} m²`}
               onChange={(v) => setFilters((f) => ({ ...f, maxArea: v }))}
             />

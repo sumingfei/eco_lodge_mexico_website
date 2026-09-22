@@ -27,7 +27,7 @@ const localePrefix = (locale: Locale) => (locale === defaultLocale ? "" : `/${lo
 
 /**
  * Public href for a route in a locale. `rest` is appended verbatim
- * (e.g. "/casa-110" or "?model=casa-110").
+ * (e.g. "/casa-90" or "?model=casa-90").
  */
 export function href(locale: Locale, key: RouteKey, rest = ""): string {
   const slug = routes[key][locale];

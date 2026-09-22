@@ -29,7 +29,7 @@ export function EcoEstimator({ defaultModel }: { defaultModel?: string }) {
   const f = e.form;
   const r = e.results;
 
-  const initialModel = defaultModel && modelRoof(defaultModel) ? defaultModel : "casa-110";
+  const initialModel = defaultModel && modelRoof(defaultModel) ? defaultModel : "casa-90";
   const [modelSlug, setModelSlug] = useState<string>(initialModel);
   const [input, setInput] = useState<EcoInput>({ ...initialEcoInput, roofM2: modelRoof(initialModel) ?? initialEcoInput.roofM2 });
   const update = <K extends keyof EcoInput>(key: K, value: EcoInput[K]) => setInput((s) => ({ ...s, [key]: value }));

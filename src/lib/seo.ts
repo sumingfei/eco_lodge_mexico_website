@@ -10,7 +10,7 @@ const DEFAULT_OG_IMAGE = "/images/hero/hero-courtyard.jpg"; // TODO: replace wit
 type PageMeta = {
   locale: Locale;
   route: RouteKey;
-  /** Extra path after the route slug, e.g. "/casa-110". */
+  /** Extra path after the route slug, e.g. "/casa-90". */
   rest?: string;
   title: string;
   description: string;

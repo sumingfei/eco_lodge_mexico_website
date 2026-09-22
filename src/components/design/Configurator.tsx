@@ -12,7 +12,7 @@ import { useI18n } from "@/i18n/LocaleProvider";
 /**
  * Visual explorer of facade × interior combinations.
  * Images are representative placeholders; TODO: replace with renders of each
- * actual combination on a model (e.g. CASA 110) for a true configurator.
+ * actual combination on a model (e.g. CASA 90) for a true configurator.
  */
 export function Configurator() {
   const { locale, dict, p } = useI18n();
